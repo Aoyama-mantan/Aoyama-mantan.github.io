@@ -1381,7 +1381,7 @@ pre code {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #ff93ff;
+  background: #0e5;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2648,6 +2648,17 @@ a:hover {
   padding: 0 !important;
   margin-bottom: 1.5em !important;
 }
+.brand {
+  background: transparent !important;
+  color: #333 !important;
+  padding: 0 !important;
+}
+header.header {
+  padding-top: 0 !important;
+}
+.logo-line {
+  display: none !important;
+}
 .site-title {
   font-size: 1em;
   font-weight: 400;
@@ -2796,8 +2807,12 @@ img {
 :root[data-theme="dark"] a {
   color: #58a6ff;
 }
+:root[data-theme="dark"] .brand {
+  background: transparent !important;
+  color: #c9d1d9 !important;
+}
 :root[data-theme="dark"] .site-title {
-  color: #e6edf3;
+  color: #c9d1d9;
 }
 :root[data-theme="dark"] .site-subtitle {
   color: #8b949e;
