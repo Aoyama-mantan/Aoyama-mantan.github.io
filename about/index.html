@@ -16,9 +16,8 @@
 
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"aoyama-mantan.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.28.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":null,"show_result":true},"fold":{"enable":false,"height":500},"language":false,"highlight_theme":"night"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"aoyama-mantan.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":true,"version":"8.28.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":null,"show_result":true},"fold":{"enable":false,"height":500},"language":false,"highlight_theme":"normal"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":false,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
 
     <meta name="description" content="👋 关于我你好，我是 Aoyama-mantan。 这个博客记录我在以下领域的思考与学习：  🧠 深度学习 — 神经网络、反向传播、架构设计 🔬 计算神经科学 — 大脑的计算模型 📐 数学 — 线性代数、概率论、优化理论 💻 编程 — Python、算法实现   📬 联系方式 GitHub: Aoyama-mantan    写博客的目的是以输出倒逼输入——把学到的东西讲清楚，才是真正">
 <meta property="og:type" content="website">
@@ -53,7 +52,7 @@
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
-<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
 
   
 
@@ -73,7 +72,7 @@
   </noscript>
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+<body itemscope itemtype="http://schema.org/WebPage">
   <div class="headband"></div>
 
   <main class="main">
@@ -106,11 +105,15 @@
 
 
 <nav class="site-nav">
-  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-文章"><a href="/archives/" rel="section"><i class="fa fa-file-text fa-fw"></i>文章</a></li><li class="menu-item menu-item-分类"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-标签"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-关于"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
   </ul>
 </nav>
 
 
+
+<!-- ============================================ -->
+<!-- 主页导航卡片 — 仅首页显示                       -->
+<!-- ============================================ -->
 
 
 </header>
@@ -131,7 +134,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%91%8B-%E5%85%B3%E4%BA%8E%E6%88%91"><span class="nav-number">1.</span> <span class="nav-text">👋 关于我</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%AC-%E8%81%94%E7%B3%BB%E6%96%B9%E5%BC%8F"><span class="nav-number">2.</span> <span class="nav-text">📬 联系方式</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%91%8B-%E5%85%B3%E4%BA%8E%E6%88%91"><span class="nav-text">👋 关于我</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%F0%9F%93%AC-%E8%81%94%E7%B3%BB%E6%96%B9%E5%BC%8F"><span class="nav-text">📬 联系方式</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -233,7 +236,7 @@
     &copy; 
     <span itemprop="copyrightYear">2026</span>
     <span class="with-love">
-      <i class="fa fa-heart"></i>
+      <i class=""></i>
     </span>
     <span class="author" itemprop="copyrightHolder">Aoyama-mantan</span>
   </div>
@@ -256,39 +259,7 @@
 <noscript>
   <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
 </noscript>
-<!-- ============================================ -->
-<!-- 页面底部 JS 注入 - 打字机效果                   -->
-<!-- ============================================ -->
-
-<!-- Typed.js 打字机效果 -->
-<script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.min.js"></script>
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    var subtitleEl = document.querySelector('.site-subtitle');
-    if (subtitleEl) {
-      // 清除原有文字，由 Typed.js 接管
-      var texts = [
-        '深度学习',
-        '计算神经科学',
-        '概率图模型',
-        '数学推导',
-        '代码与思考'
-      ];
-      subtitleEl.textContent = '';
-      new Typed(subtitleEl, {
-        strings: texts,
-        typeSpeed: 80,
-        backSpeed: 40,
-        backDelay: 1500,
-        startDelay: 500,
-        loop: true,
-        showCursor: false,
-      });
-    }
-  });
-</script>
-
-<!-- Medium Zoom 图片灯箱 -->
+<!-- 图片灯箱 -->
 <script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
