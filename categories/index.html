@@ -275,5 +275,74 @@
   });
 </script>
 
+<!-- 黑白模式切换按钮 -->
+<script>
+  (function() {
+    var STORAGE_KEY = 'theme';
+    var html = document.documentElement;
+
+    // 读取存储的主题
+    var saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === 'dark') {
+      html.setAttribute('data-theme', 'dark');
+    }
+
+    function createToggle() {
+      var btn = document.createElement('button');
+      btn.className = 'theme-toggle';
+      var isDark = html.getAttribute('data-theme') === 'dark';
+      btn.textContent = isDark ? '☀' : '☾';
+      btn.title = isDark ? '切换亮色' : '切换暗色';
+      btn.addEventListener('click', function() {
+        var dark = html.getAttribute('data-theme') === 'dark';
+        if (dark) {
+          html.removeAttribute('data-theme');
+          localStorage.setItem(STORAGE_KEY, 'light');
+          btn.textContent = '☾';
+          btn.title = '切换暗色';
+        } else {
+          html.setAttribute('data-theme', 'dark');
+          localStorage.setItem(STORAGE_KEY, 'dark');
+          btn.textContent = '☀';
+          btn.title = '切换亮色';
+        }
+      });
+      document.body.appendChild(btn);
+    }
+
+    createToggle();
+  })();
+</script>
+<style>
+  .theme-toggle {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    z-index: 999;
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ddd;
+    background: #fff;
+    border-radius: 50%;
+    font-size: 1.2em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s;
+  }
+  .theme-toggle:hover {
+    border-color: #000;
+  }
+  [data-theme="dark"] .theme-toggle {
+    border-color: #333;
+    background: #222;
+    color: #ccc;
+  }
+  [data-theme="dark"] .theme-toggle:hover {
+    border-color: #fff;
+  }
+</style>
+
 </body>
 </html>
