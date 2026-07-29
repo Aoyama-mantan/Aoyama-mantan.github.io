@@ -1381,7 +1381,7 @@ pre code {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #41c730;
+  background: #ff93ff;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
@@ -2628,6 +2628,9 @@ a {
 a:hover {
   text-decoration: underline;
 }
+.headband {
+  display: none !important;
+}
 .header,
 .main,
 .content,
@@ -2638,8 +2641,10 @@ a:hover {
   border: none !important;
   padding: 0 !important;
   margin: 0 !important;
+  box-shadow: none !important;
 }
 .header-inner {
+  background: none !important;
   padding: 0 !important;
   margin-bottom: 1.5em !important;
 }
