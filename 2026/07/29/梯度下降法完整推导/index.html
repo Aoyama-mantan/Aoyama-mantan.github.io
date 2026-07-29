@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.2">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"aoyama-mantan.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.28.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":true,"style":null,"show_result":true},"fold":{"enable":false,"height":500},"language":false,"highlight_theme":"night"},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="梯度下降法是机器学习中最核心的优化算法之一。本文给出从线性回归到一般形式的完整推导。  **📌 前置知识**：本文假设读者已掌握线性代数基础（矩阵乘法、转置）和多元微积分（偏导数、梯度）。    一、问题设定对于线性回归，我们有一个假设函数： $$h_\theta(x) &#x3D; \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \cdots + \theta">
+<meta property="og:type" content="article">
+<meta property="og:title" content="梯度下降法完整推导">
+<meta property="og:url" content="https://aoyama-mantan.github.io/2026/07/29/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95%E5%AE%8C%E6%95%B4%E6%8E%A8%E5%AF%BC/index.html">
+<meta property="og:site_name" content="Aoyama&#39;s Blog">
+<meta property="og:description" content="梯度下降法是机器学习中最核心的优化算法之一。本文给出从线性回归到一般形式的完整推导。  **📌 前置知识**：本文假设读者已掌握线性代数基础（矩阵乘法、转置）和多元微积分（偏导数、梯度）。    一、问题设定对于线性回归，我们有一个假设函数： $$h_\theta(x) &#x3D; \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \cdots + \theta">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-07-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2026-07-29T05:41:52.876Z">
+<meta property="article:author" content="Aoyama-mantan">
+<meta property="article:tag" content="优化">
+<meta property="article:tag" content="数学">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://aoyama-mantan.github.io/2026/07/29/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95%E5%AE%8C%E6%95%B4%E6%8E%A8%E5%AF%BC/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://aoyama-mantan.github.io/2026/07/29/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95%E5%AE%8C%E6%95%B4%E6%8E%A8%E5%AF%BC/","path":"2026/07/29/梯度下降法完整推导/","title":"梯度下降法完整推导"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>梯度下降法完整推导 | Aoyama's Blog</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Aoyama's Blog</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">深度学习 · 计算神经科学 · 数学</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E9%97%AE%E9%A2%98%E8%AE%BE%E5%AE%9A"><span class="nav-number">1.</span> <span class="nav-text">一、问题设定</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%A2%AF%E5%BA%A6%E8%AE%A1%E7%AE%97"><span class="nav-number">2.</span> <span class="nav-text">二、梯度计算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%A0%87%E9%87%8F%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 标量形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E5%90%91%E9%87%8F%E5%BD%A2%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 向量形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-%E7%9F%A9%E9%98%B5%E5%BD%A2%E5%BC%8F%EF%BC%88%E6%9C%80%E7%AE%80%E6%B4%81%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 矩阵形式（最简洁）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%9B%B4%E6%96%B0%E8%A7%84%E5%88%99"><span class="nav-number">3.</span> <span class="nav-text">三、更新规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%94%B6%E6%95%9B%E6%80%A7%E5%88%86%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">四、收敛性分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E4%B8%89%E7%A7%8D%E5%8F%98%E4%BD%93"><span class="nav-number">5.</span> <span class="nav-text">五、三种变体</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E4%B8%8E%E6%AD%A3%E8%A7%84%E6%96%B9%E7%A8%8B%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="nav-number">6.</span> <span class="nav-text">六、与正规方程的关系</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Aoyama-mantan</p>
+  <div class="site-description" itemprop="description">个人技术博客，记录学习与思考</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">1</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">3</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Aoyama-mantan" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Aoyama-mantan" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://aoyama-mantan.github.io/2026/07/29/%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95%E5%AE%8C%E6%95%B4%E6%8E%A8%E5%AF%BC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Aoyama-mantan">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Aoyama's Blog">
+      <meta itemprop="description" content="个人技术博客，记录学习与思考">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="梯度下降法完整推导 | Aoyama's Blog">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          梯度下降法完整推导
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-07-29 00:00:00 / 修改时间：13:41:52" itemprop="dateCreated datePublished" datetime="2026-07-29T00:00:00+08:00">2026-07-29</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" itemprop="url" rel="index"><span itemprop="name">机器学习</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p><span class="gradient-text">梯度下降法是机器学习中最核心的优化算法之一。</span>本文给出从线性回归到一般形式的完整推导。</p>
+<div class="callout callout-info">
+**📌 前置知识**：本文假设读者已掌握线性代数基础（矩阵乘法、转置）和多元微积分（偏导数、梯度）。
+</div>
+
+<hr>
+<h2 id="一、问题设定"><a href="#一、问题设定" class="headerlink" title="一、问题设定"></a>一、问题设定</h2><p>对于线性回归，我们有一个假设函数：</p>
+<p>$$<br>h_\theta(x) &#x3D; \theta_0 + \theta_1 x_1 + \theta_2 x_2 + \cdots + \theta_n x_n &#x3D; \theta^T x<br>$$</p>
+<p>损失函数定义为<strong>均方误差（MSE）</strong>：</p>
+<p>$$<br>J(\theta) &#x3D; \frac{1}{2m} \sum_{i&#x3D;1}^{m} \left( h_\theta(x^{(i)}) - y^{(i)} \right)^2<br>$$</p>
+<p>我们的目标是找到使 $J(\theta)$ 最小的参数 $\theta$：</p>
+<p>$$<br>\theta^* &#x3D; \arg\min_\theta J(\theta)<br>$$</p>
+<hr>
+<h2 id="二、梯度计算"><a href="#二、梯度计算" class="headerlink" title="二、梯度计算"></a>二、梯度计算</h2><h3 id="2-1-标量形式"><a href="#2-1-标量形式" class="headerlink" title="2.1 标量形式"></a>2.1 标量形式</h3><p>对第 $j$ 个参数求偏导：</p>
+<p>$$<br>\frac{\partial J}{\partial \theta_j} &#x3D; \frac{1}{m} \sum_{i&#x3D;1}^{m} \left( h_\theta(x^{(i)}) - y^{(i)} \right) \cdot x_j^{(i)}<br>$$</p>
+<div class="callout callout-tip">
+**💡 直观理解**：梯度中每一项是"预测误差 × 该特征的值"。误差越大、特征值越大 → 需要调整的幅度越大。
+</div>
+
+<h3 id="2-2-向量形式"><a href="#2-2-向量形式" class="headerlink" title="2.2 向量形式"></a>2.2 向量形式</h3><p>将所有参数放在一起写成梯度向量：</p>
+<p>$$<br>\nabla_\theta J(\theta) &#x3D;<br>\begin{bmatrix}<br>\frac{\partial J}{\partial \theta_0} \<br>\frac{\partial J}{\partial \theta_1} \<br>\vdots \<br>\frac{\partial J}{\partial \theta_n}<br>\end{bmatrix}<br>$$</p>
+<h3 id="2-3-矩阵形式（最简洁）"><a href="#2-3-矩阵形式（最简洁）" class="headerlink" title="2.3 矩阵形式（最简洁）"></a>2.3 矩阵形式（最简洁）</h3><p>设设计矩阵 $X \in \mathbb{R}^{m \times (n+1)}$，标签向量 $y \in \mathbb{R}^m$，则：</p>
+<p>$$<br>\nabla_\theta J(\theta) &#x3D; \frac{1}{m} X^T (X\theta - y)<br>$$</p>
+<div class="callout callout-warn">
+**⚠️ 维度检查**：
+- $X$: $m \times (n+1)$
+- $\theta$: $(n+1) \times 1$
+- $X\theta - y$: $m \times 1$
+- $X^T(X\theta - y)$: $(n+1) \times 1$ ✓
+</div>
+
+<hr>
+<h2 id="三、更新规则"><a href="#三、更新规则" class="headerlink" title="三、更新规则"></a>三、更新规则</h2><p>梯度下降的参数更新：</p>
+<p>$$<br>\theta :&#x3D; \theta - \alpha \nabla_\theta J(\theta)<br>$$</p>
+<p>写成矩阵形式：</p>
+<p>$$<br>\theta :&#x3D; \theta - \frac{\alpha}{m} X^T (X\theta - y)<br>$$</p>
+<p>其中 $\alpha$ 是<strong>学习率</strong>（learning rate）。</p>
+<hr>
+<h2 id="四、收敛性分析"><a href="#四、收敛性分析" class="headerlink" title="四、收敛性分析"></a>四、收敛性分析</h2><p>对于线性回归，$J(\theta)$ 是凸函数，梯度下降可以保证收敛到全局最优。其 Hessian 矩阵为：</p>
+<p>$$<br>H &#x3D; \nabla_\theta^2 J(\theta) &#x3D; \frac{1}{m} X^T X<br>$$</p>
+<p>由于 $X^T X$ 是半正定矩阵，$J(\theta)$ 是凸函数 ✓</p>
+<div class="callout callout-danger">
+**⚠️ 注意**：对于神经网络等非凸优化问题，梯度下降只能保证收敛到局部最优（或鞍点）。
+</div>
+
+<hr>
+<h2 id="五、三种变体"><a href="#五、三种变体" class="headerlink" title="五、三种变体"></a>五、三种变体</h2><table>
+<thead>
+<tr>
+<th>变体</th>
+<th>每次更新用多少数据</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>批量梯度下降 (BGD)</strong></td>
+<td>全部 $m$ 条</td>
+<td>稳定但慢</td>
+</tr>
+<tr>
+<td><strong>随机梯度下降 (SGD)</strong></td>
+<td>1 条</td>
+<td>快但不稳定</td>
+</tr>
+<tr>
+<td><strong>小批量梯度下降 (Mini-batch)</strong></td>
+<td>$b$ 条 ($1 &lt; b &lt; m$)</td>
+<td>折中方案 ⭐</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六、与正规方程的关系"><a href="#六、与正规方程的关系" class="headerlink" title="六、与正规方程的关系"></a>六、与正规方程的关系</h2><p>对于线性回归，可以直接求解正规方程：</p>
+<p>$$<br>\theta &#x3D; (X^T X)^{-1} X^T y<br>$$</p>
+<p><strong>对比</strong>：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>梯度下降</th>
+<th>正规方程</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>需要选择 $\alpha$</td>
+<td>✅ 是</td>
+<td>❌ 否</td>
+</tr>
+<tr>
+<td>需要迭代</td>
+<td>✅ 是</td>
+<td>❌ 否</td>
+</tr>
+<tr>
+<td>$n$ 很大时</td>
+<td>✅ 好用</td>
+<td>❌ $O(n^3)$ 太慢</td>
+</tr>
+<tr>
+<td>适用于其他模型</td>
+<td>✅ 通用</td>
+<td>❌ 仅线性回归</td>
+</tr>
+</tbody></table>
+<hr>
+<div class="card">
+**📖 延伸阅读**：
+- 动量法 (Momentum)
+- RMSprop / Adam 自适应学习率
+- 学习率衰减策略
+</div>
+
+<p><span class="shiny-text">— 全文完 —</span></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/" rel="tag"># 机器学习</a>
+              <a href="/tags/%E6%95%B0%E5%AD%A6/" rel="tag"># 数学</a>
+              <a href="/tags/%E4%BC%98%E5%8C%96/" rel="tag"># 优化</a>
+          </div>
+
+        
+
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Aoyama-mantan</span>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<!-- ============================================ -->
+<!-- 页面底部 JS 注入 - 打字机效果                   -->
+<!-- ============================================ -->
+
+<!-- Typed.js 打字机效果 -->
+<script src="https://cdn.jsdelivr.net/npm/typed.js@2.1.0/dist/typed.umd.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var subtitleEl = document.querySelector('.site-subtitle');
+    if (subtitleEl) {
+      // 清除原有文字，由 Typed.js 接管
+      var texts = [
+        '深度学习',
+        '计算神经科学',
+        '概率图模型',
+        '数学推导',
+        '代码与思考'
+      ];
+      subtitleEl.textContent = '';
+      new Typed(subtitleEl, {
+        strings: texts,
+        typeSpeed: 80,
+        backSpeed: 40,
+        backDelay: 1500,
+        startDelay: 500,
+        loop: true,
+        showCursor: false,
+      });
+    }
+  });
+</script>
+
+<!-- Medium Zoom 图片灯箱 -->
+<script src="https://cdn.jsdelivr.net/npm/medium-zoom@1.1.0/dist/medium-zoom.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    mediumZoom('.post-body img', {
+      margin: 24,
+      background: 'rgba(0,0,0,0.85)',
+    });
+  });
+</script>
+
+</body>
+</html>
