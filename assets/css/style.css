@@ -91,11 +91,6 @@ body {
 
 /* ---------- hero ---------- */
 .hero { padding: clamp(64px, 12vw, 140px) 0 clamp(56px, 7vw, 88px); }
-.eyebrow {
-  font-family: var(--font-mono); font-size: .74rem; letter-spacing: .22em;
-  text-transform: uppercase; color: var(--navy); display: inline-flex; align-items: center; gap: 12px;
-}
-.eyebrow::before { content: ""; width: 34px; height: 1px; background: var(--navy); display: inline-block; }
 h1.hero-title {
   font-family: var(--font-display); font-weight: 800;
   font-size: clamp(2.8rem, 8vw, 5.6rem); line-height: 1.02; letter-spacing: -.005em;
