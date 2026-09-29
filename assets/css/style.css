@@ -47,6 +47,11 @@ body {
   text-rendering: optimizeLegibility;
   line-height: 1.75;
   overflow-x: hidden;
+  /* keep the footer at the bottom of the viewport on short pages */
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* grain — Hermes keeps a whisper of it */
@@ -79,7 +84,10 @@ body {
 .nav a.active { color: var(--accent); border-color: var(--line-2); }
 
 /* ---------- container ---------- */
-.wrap { max-width: var(--max, 1040px); margin: 0 auto; padding: 0 var(--gutter); }
+.wrap { max-width: var(--max, 1040px); margin: 0 auto; padding: 0 var(--gutter); flex: 1 0 auto; }
+/* home: with nothing under the hero, center it in the free space instead of
+   leaving a dead gap above the footer */
+.wrap.centered { display: flex; flex-direction: column; justify-content: center; }
 
 /* ---------- hero ---------- */
 .hero { padding: clamp(64px, 12vw, 140px) 0 clamp(56px, 7vw, 88px); }
@@ -167,17 +175,6 @@ h1.hero-title .hl { font-style: italic; color: var(--navy-bright); font-weight: 
 .row .title { font-family: var(--font-display); font-size: 1.2rem; font-weight: 600; color: var(--ink); }
 .row:hover .title { color: var(--accent); }
 .row .meta { font-family: var(--font-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--navy); }
-
-/* empty document-list skeleton — faint placeholder slots, no words */
-.row.ghost { align-items: center; cursor: default; }
-.row.ghost:hover { background: none; }
-.list .row.ghost:last-child { border-bottom: none; }
-.row.ghost .ghost-date,
-.row.ghost .ghost-title,
-.row.ghost .ghost-meta { flex: 0 0 auto; border-radius: 3px; display: block; }
-.row.ghost .ghost-date { width: 104px; height: 12px; background: color-mix(in srgb, var(--ink-faint) 28%, transparent); }
-.row.ghost .ghost-title { width: 52%; height: 15px; background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--ink-faint) 38%, transparent) 0 9px, transparent 9px 20px); }
-.row.ghost .ghost-meta { width: 18%; height: 11px; background: color-mix(in srgb, var(--ink-faint) 18%, transparent); }
 
 /* ---------- footer ---------- */
 footer { border-top: 1px solid var(--line); padding: 40px var(--gutter); }
