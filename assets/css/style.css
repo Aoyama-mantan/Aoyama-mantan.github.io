@@ -74,14 +74,6 @@ body {
 }
 .brand .rule { width: 22px; height: 2px; background: var(--accent); }
 .brand:hover { color: var(--accent); }
-.nav { display: flex; gap: 2px; }
-.nav a {
-  color: var(--ink-dim); text-decoration: none; font-family: var(--font-mono);
-  font-size: .78rem; text-transform: uppercase; letter-spacing: .14em;
-  padding: 8px 14px; border: 1px solid transparent; transition: .15s;
-}
-.nav a:hover { color: var(--ink); border-color: var(--line-2); }
-.nav a.active { color: var(--accent); border-color: var(--line-2); }
 
 /* ---------- container ---------- */
 .wrap { max-width: var(--max, 1040px); margin: 0 auto; padding: 0 var(--gutter); flex: 1 0 auto; }
@@ -196,7 +188,6 @@ footer .social a:hover { color: var(--accent); border-color: var(--line-2); }
 @media (max-width: 640px) {
   .section-head { flex-wrap: wrap; }
   .row .date { width: auto; }
-  .nav a { padding: 8px 10px; }
 }
 
 /* reduced motion */
