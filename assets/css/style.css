@@ -27,6 +27,7 @@
   --ink:     #1F1E1A;   /* 正文 —— 暖黑，非纯黑 */
   --ink-2:   #6A6559;   /* 次级文字：小标签、日期、类型 */
   --red:     #B8442C;   /* 强调 —— 朱红，比正红柔一档 */
+  --wine:    #6E2233;   /* 酒红 —— 只用于报头那个方块（身份标记） */
   --rule:    #1F1E1A;   /* 实线（章节、版权页、报头下） */
   --rule-soft: rgba(31,30,26,.18);  /* 行分隔线 */
   --tint:    rgba(31,30,26,.07);    /* 正文里的行内码 / 代码块底色 */
@@ -49,6 +50,7 @@
   --ink:     #E7E3D8;
   --ink-2:   #948E80;
   --red:     #D0603F;
+  --wine:    #9E4A5E;
   --rule:    #E7E3D8;
   --rule-soft: rgba(231,227,216,.20);
   --tint:    rgba(231,227,216,.10);
@@ -60,6 +62,7 @@
     --ink:     #E7E3D8;
     --ink-2:   #948E80;
     --red:     #D0603F;
+    --wine:    #9E4A5E;
     --rule:    #E7E3D8;
     --rule-soft: rgba(231,227,216,.20);
     --tint:    rgba(231,227,216,.10);
@@ -96,7 +99,7 @@ body {
 .masthead { display: flex; align-items: center; gap: 12px; padding: 34px 0 0; }
 .masthead h1 { margin: 0; font-weight: 400; }   /* 语义上是 h1，视觉上与小标签同级 */
 .masthead-tail { margin-left: auto; }
-.mark { flex: none; width: 22px; height: 22px; background: var(--red); }
+.mark { flex: none; width: 22px; height: 22px; background: var(--wine); }
 
 /* ---------- 配色切换：一个图标，点击循环 自动 → 白天 → 夜间 ----------
    显示哪个图标完全由 CSS 依据 html 上的状态决定（没有属性 = 自动），
@@ -118,13 +121,10 @@ body {
 :root[data-theme="light"] .theme-btn .i-light,
 :root[data-theme="dark"]  .theme-btn .i-dark { display: block; }
 
-/* ---------- 文档页顶边栏：返回索引，滚动时钉在顶边 ----------
-   只用在文档页（索引页没有可返回的地方，不加）。背景用纸色，长文滚过时文字不会透出来。 */
+/* ---------- 文档页顶边栏：返回索引放在页面顶部 ----------
+   只用在文档页。**不钉住**：它随页面滚动离开，和正文一样是文档流的一部分。
+   背景纸色 + 细下边框，和下方的 meta 行形成两条平行线。 */
 .masthead--bar {
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: var(--paper);
   border-bottom: 1px solid var(--rule-soft);
   padding: 18px 0 14px;          /* 比索引页报头紧凑：它是边栏，不是标题区 */
 }
