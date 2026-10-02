@@ -121,10 +121,14 @@ body {
 :root[data-theme="light"] .theme-btn .i-light,
 :root[data-theme="dark"]  .theme-btn .i-dark { display: block; }
 
-/* ---------- 文档页顶边栏：返回索引放在页面顶部 ----------
-   只用在文档页。**不钉住**：它随页面滚动离开，和正文一样是文档流的一部分。
-   背景纸色 + 细下边框，和下方的 meta 行形成两条平行线。 */
+/* ---------- 文档页顶边栏：返回索引，滚动时钉在顶边 ----------
+   只用在文档页（索引页没有可返回的地方）。**钉住**：滚动时停在视口顶边，
+   背景必须是不透明的纸色，否则长文会从字下透出来。 */
 .masthead--bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--paper);
   border-bottom: 1px solid var(--rule-soft);
   padding: 18px 0 14px;          /* 比索引页报头紧凑：它是边栏，不是标题区 */
 }

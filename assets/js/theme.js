@@ -59,7 +59,8 @@
 
   // 版本自愈：GitHub Pages 给所有资源发 max-age=600，浏览器可能仍在用旧的页面副本
   // （表现就是「明明改了但看起来没变」）。这里比对页面里的 meta 与 version.json
-  // （no-store，绕过缓存），不一致就重新加载一次；只在页面还没滚动时动手，不打断阅读。
+  // （no-store，绕过缓存），不一致就带 cache-buster 重新加载一次；
+  // 只在页面还没滚动时动手，不打断阅读。
   function selfHeal() {
     var meta = document.querySelector('meta[name="site-version"]');
     if (!meta || !meta.content) { return; }
@@ -74,7 +75,9 @@
           if (sessionStorage.getItem(KEY + '-healed') === info.v) { return; }   // 每个版本最多重载一次
           sessionStorage.setItem(KEY + '-healed', info.v);
         } catch (e) { /* 存不了也最多重载一次 */ }
-        location.reload();
+        var target = new URL(location.href);                     // 带一个一次性参数重新取 HTML，
+        target.searchParams.set('_', info.v);                    // 否则重载可能又拿到同一份缓存页面
+        location.replace(target.toString());
       })
       .catch(function () { /* 取不到就算了，页面照常用 */ });
   }
