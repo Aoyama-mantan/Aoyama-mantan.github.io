@@ -118,6 +118,17 @@ body {
 :root[data-theme="light"] .theme-btn .i-light,
 :root[data-theme="dark"]  .theme-btn .i-dark { display: block; }
 
+/* ---------- 文档页顶边栏：返回索引，滚动时钉在顶边 ----------
+   只用在文档页（索引页没有可返回的地方，不加）。背景用纸色，长文滚过时文字不会透出来。 */
+.masthead--bar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule-soft);
+  padding: 18px 0 14px;          /* 比索引页报头紧凑：它是边栏，不是标题区 */
+}
+
 /* ---------- 数据行：两行小字，被一条实线封住 ---------- */
 .dataline {
   margin-top: 26px;
