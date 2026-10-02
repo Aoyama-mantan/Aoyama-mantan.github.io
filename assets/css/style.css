@@ -33,8 +33,13 @@
   --rule-soft: rgba(31,30,26,.18);  /* 行分隔线 */
   --tint:    rgba(31,30,26,.07);    /* 正文里的行内码 / 代码块底色 */
 
-  --sans: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
-  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  /* 字体：不指定具体字体，交给浏览器/系统的默认字体去渲染 ——
+     每台机器用自己那套默认（Mac 与 Windows 不同，中文与拉丁各按系统设置取字），
+     站点不替访客决定字体。要让全站换成系统 UI 无衬线（更「干净」的一种默认），
+     在下面加一行：  --sans: system-ui, sans-serif;  并把它写回 body 的 font-family。
+     等宽部分只用通用族名 monospace，同样由浏览器决定具体是哪个等宽字体。 */
+  --sans: inherit;
+  --mono: monospace;
 
   --max: 1080px;
   --gutter: clamp(20px, 4vw, 64px);
@@ -79,7 +84,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--sans);
+  /* 不设 font-family：正文继承浏览器默认字体（见上面 --sans 的说明） */
   font-size: 1rem;          /* = 根字号；中文在暖纸底上比 16px 略大更省眼 */
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
