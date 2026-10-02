@@ -29,6 +29,7 @@
   --ink-2:   #6A6559;   /* 次级文字：小标签、日期、类型 */
   --red:     #B8442C;   /* 强调 —— 朱红，比正红柔一档 */
   --wine:    #6E2233;   /* 酒红 —— 只用于报头那个方块（身份标记） */
+  --link:    #1D4E89;   /* 链接蓝 —— 只用于可点的地方：下划线、悬停反白、焦点圈 */
   --rule:    #1F1E1A;   /* 实线（章节、版权页、报头下） */
   --rule-soft: rgba(31,30,26,.18);  /* 行分隔线 */
   --tint:    rgba(31,30,26,.07);    /* 正文里的行内码 / 代码块底色 */
@@ -57,6 +58,7 @@
   --ink-2:   #948E80;
   --red:     #D0603F;
   --wine:    #9E4A5E;
+  --link:    #7FB0E8;
   --rule:    #E7E3D8;
   --rule-soft: rgba(231,227,216,.20);
   --tint:    rgba(231,227,216,.10);
@@ -69,6 +71,7 @@
     --ink-2:   #948E80;
     --red:     #D0603F;
     --wine:    #9E4A5E;
+  --link:    #7FB0E8;
     --rule:    #E7E3D8;
     --rule-soft: rgba(231,227,216,.20);
     --tint:    rgba(231,227,216,.10);
@@ -124,7 +127,7 @@ body {
   -webkit-appearance: none; appearance: none;
 }
 .theme-btn:hover { color: var(--ink); }
-.theme-btn:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.theme-btn:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 .theme-btn svg { display: none; width: 1rem; height: 1rem; }   /* 三个图标叠在同一个位置 */
 :root:not([data-theme]) .theme-btn .i-auto,
 :root[data-theme="light"] .theme-btn .i-light,
@@ -172,7 +175,7 @@ h2 { margin: 0; font-size: 1.125rem; font-weight: 700; letter-spacing: .02em; te
 .docs .k { font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; color: var(--ink-2); }
 .docs .t { font-size: 1.25rem; }        /* 主页最大的字：索引里的文档标题 */
 .docs .t a { border-bottom: 1px solid var(--rule-soft); }        /* 标题链接：细下划线 */
-.docs .t a:hover { background: none; color: var(--red); border-color: var(--red); }
+.docs .t a:hover { background: none; color: var(--link); border-color: var(--link); }
 .docs .is-empty .t { max-width: 46ch; color: var(--ink-2); }
 .docs .is-empty .t b { font-weight: 400; color: var(--ink); }
 @media (max-width: 560px) {
@@ -229,8 +232,9 @@ h2 { margin: 0; font-size: 1.125rem; font-weight: 700; letter-spacing: .02em; te
 .prose hr { border: 0; border-top: 1px solid var(--rule-soft); margin: 2.2em 0; }
 
 /* ---------- 正文内链接 ---------- */
-a { color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--red); }
-a:hover { background: var(--red); border-color: var(--red); color: var(--paper); }
+a { color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--link); }
+a:hover { background: var(--link); border-color: var(--link); color: var(--paper); }
+a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
 
 /* ---------- 版权页 ---------- */
 footer {
