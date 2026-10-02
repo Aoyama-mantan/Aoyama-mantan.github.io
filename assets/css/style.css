@@ -27,8 +27,6 @@
   --paper:   #EDEAE2;   /* 页面底 —— 暖纸，非纯白 */
   --ink:     #1F1E1A;   /* 正文 —— 暖黑，非纯黑 */
   --ink-2:   #6A6559;   /* 次级文字：小标签、日期、类型 */
-  --red:     #B8442C;   /* 强调 —— 朱红，比正红柔一档 */
-  --wine:    #6E2233;   /* 酒红 —— 只用于报头那个方块（身份标记） */
   --link:    #1D4E89;   /* 链接蓝 —— 只用于可点的地方：下划线、悬停反白、焦点圈 */
   --rule:    #1F1E1A;   /* 实线（章节、版权页、报头下） */
   --rule-soft: rgba(31,30,26,.18);  /* 行分隔线 */
@@ -56,8 +54,6 @@
   --paper:   #12120F;
   --ink:     #E7E3D8;
   --ink-2:   #948E80;
-  --red:     #D0603F;
-  --wine:    #9E4A5E;
   --link:    #7FB0E8;
   --rule:    #E7E3D8;
   --rule-soft: rgba(231,227,216,.20);
@@ -69,9 +65,7 @@
     --paper:   #12120F;
     --ink:     #E7E3D8;
     --ink-2:   #948E80;
-    --red:     #D0603F;
-    --wine:    #9E4A5E;
-  --link:    #7FB0E8;
+    --link:    #7FB0E8;
     --rule:    #E7E3D8;
     --rule-soft: rgba(231,227,216,.20);
     --tint:    rgba(231,227,216,.10);
@@ -111,7 +105,7 @@ body {
 .masthead { display: flex; align-items: center; gap: 12px; padding: 34px 0 0; }
 .masthead h1 { margin: 0; font-weight: 400; }   /* 语义上是 h1，视觉上与小标签同级 */
 .masthead-tail { margin-left: auto; }
-.mark { flex: none; width: 22px; height: 22px; background: var(--wine); }
+.mark { flex: none; width: 22px; height: 22px; background: var(--link); }
 
 /* ---------- 配色切换：一个图标，点击循环 自动 → 白天 → 夜间 ----------
    显示哪个图标完全由 CSS 依据 html 上的状态决定（没有属性 = 自动），
@@ -216,7 +210,7 @@ h2 { margin: 0; font-size: 1.125rem; font-weight: 700; letter-spacing: .02em; te
 .prose pre code { background: none; padding: 0; font-size: .85rem; line-height: 1.6; }
 .prose blockquote {
   margin: 0 0 1.3em; padding: .1em 0 .1em 1.1em;
-  border-left: 2px solid var(--red); color: var(--ink-2);
+  border-left: 2px solid var(--link); color: var(--ink-2);
 }
 .prose table {
   width: 100%; border-collapse: collapse;
@@ -248,5 +242,5 @@ footer {
 }
 
 /* ---------- 杂项 ---------- */
-::selection { background: var(--red); color: var(--paper); }
+::selection { background: var(--link); color: var(--paper); }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
