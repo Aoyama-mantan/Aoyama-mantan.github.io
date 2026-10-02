@@ -8,6 +8,7 @@ on:
     paths:
       - "docs/**"
       - "tools/**"
+      - "assets/**"          # 样式/脚本一变就重建，以便刷新页面里的资源指纹
       - ".github/workflows/build-docs.yml"
   workflow_dispatch:
 

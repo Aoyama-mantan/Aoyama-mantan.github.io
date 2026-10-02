@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import hashlib
 import html
 import pathlib
 import posixpath
@@ -40,6 +41,10 @@ OUT_DIR = "d"
 TEMPLATE = "tools/templates/doc.html"
 TYPE_FALLBACK = "—"
 SKIP_NAMES = {"readme.md"}
+# 需要带内容指纹引用的样式/脚本（GitHub Pages 的缓存是 max-age=600，
+# 不加指纹的话改了 CSS 之后最多 10 分钟内访客（包括自己）看到的还是旧的）
+VERSIONED_ASSETS = ("assets/css/style.css", "assets/js/theme.js")
+ASSET_REF_RE = re.compile(r"(assets/(?:css/style\.css|js/theme\.js))(?:\?v=[0-9a-f]+)?")
 KEEP = {".gitkeep"}
 
 try:
@@ -154,6 +159,19 @@ def rewrite_md_links(body_html: str, doc: dict, doc_map: dict, docs_dir: str, un
     return re.sub(r'(href)="([^"]+)"', repl, body_html)
 
 
+def asset_version(root: pathlib.Path) -> str:
+    """样式/脚本的内容指纹：内容一变，页面引用的 URL 就变，浏览器必然重新取。"""
+    digest = hashlib.sha256()
+    for rel in VERSIONED_ASSETS:
+        path = root / rel
+        digest.update(path.read_bytes() if path.exists() else b"")
+    return digest.hexdigest()[:8]
+
+
+def version_assets(markup: str, version: str) -> str:
+    return ASSET_REF_RE.sub(lambda m: "%s?v=%s" % (m.group(1), version), markup)
+
+
 def render_rows(docs: list, indent: str = "        ") -> str:
     if not docs:
         return (f'{indent}<li class="is-empty">\n'
@@ -215,12 +233,14 @@ def main() -> int:
     expected: dict[pathlib.Path, str] = {}
     doc_map = {doc["src_rel"]: doc["out_rel"] for doc in docs}
     unresolved: list = []
+    version = asset_version(root)
     for doc in docs:
-        expected[(root / doc["out_rel"])] = render_doc_page(doc, template, doc_map, args.docs, unresolved)
+        expected[(root / doc["out_rel"])] = version_assets(
+            render_doc_page(doc, template, doc_map, args.docs, unresolved), version)
     for src, out_rel in assets:
         expected[root / out_rel] = None            # None = 直接复制字节
 
-    new_index = rebuild_index(index_html, docs)
+    new_index = version_assets(rebuild_index(index_html, docs), version)
 
     # 对比现状，列出变化
     changes = []
