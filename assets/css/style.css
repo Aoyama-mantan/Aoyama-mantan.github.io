@@ -1,10 +1,10 @@
 /* ============================================================
    Aoyama-mantan · 个人文档库
    设计语言：瑞士国际主义 · 「字阶」版
-     · 只有两级字号——很大 与 很小；中间层级靠分隔线和栏位对齐来分
-   · 报头不放大字标题（用户明确要求）：站点名用小标签呈现，全站最大字号是章节编号 01/02
+     · 页面只有两级字号——很大 与 很小；中间层级靠分隔线和栏位对齐来分
+     · 报头不放大字标题（用户明确要求）：站点名用小标签呈现
      · 左对齐，不居中；无圆角、无阴影、无渐变、无噪点、无卡片
-     · 单一强调色（朱红），只出现在需要被看见的地方：标记块、章节号、链接下划线
+     · 单一强调色（朱红），只出现在需要被看见的地方：标记块、链接下划线、正文里的引用线
      · 不加载任何网络字体：拉丁字母走 Helvetica → Arial，
        中文走系统黑体（PingFang SC / 微软雅黑 / Noto Sans SC）
    护眼处理（用户要求「护眼的色调」）：
@@ -12,9 +12,13 @@
      · 正文 17px / 行高 1.65 / 每行约 34 字；正文对比约 13.9:1（纯黑白是 21:1，长时间阅读偏刺眼）
      · 深色模式跟随系统，用暖黑 #12120F + 暖白 #E7E3D8，同样避开纯黑纯白
    内容边界（用户明确要求）：这是纯粹的文档整理站，页面只出现文档本身的信息——
-   文档名、日期、类型、总数、排序方式。**不放身份、学历、研究方向、履历、联系方式等
-   个人介绍类内容**；加新内容前先确认它属于「文档的元数据」还是「人的简介」。
-   维护提示：改配色只改下面的 token；结构只有 报头 / 数据行 / 文档索引 / 类型词表 / 版权页 五块。
+   文档名、日期、类型、总数、排序方式。不放身份、学历、研究方向、履历、联系方式等
+   个人介绍类内容；加新内容前先确认它属于「文档的元数据」还是「人的简介」。
+   页面构成：
+     · index.html（索引）：报头 / 数据行 / 文档索引 / 版权页 —— 只放索引，不放别的
+     · d/ 下的文档页（由 docs/ 里的 markdown 生成）：报头 / 标题 / 正文 / 版权页
+   维护提示：改配色只改下面的 token。index.html 与 d/ 里的索引行与文档页都是
+   tools/build_site.py 生成的，手改会被下次构建覆盖。
    ============================================================ */
 
 :root {
@@ -24,7 +28,8 @@
   --ink-2:   #6A6559;   /* 次级文字：小标签、日期、类型 */
   --red:     #B8442C;   /* 强调 —— 朱红，比正红柔一档 */
   --rule:    #1F1E1A;   /* 实线（章节、版权页、报头下） */
-  --rule-soft: rgba(31,30,26,.18);  /* 索引行分隔线 */
+  --rule-soft: rgba(31,30,26,.18);  /* 行分隔线 */
+  --tint:    rgba(31,30,26,.07);    /* 正文里的行内码 / 代码块底色 */
 
   --sans: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
@@ -42,6 +47,7 @@
     --red:     #D0603F;
     --rule:    #E7E3D8;
     --rule-soft: rgba(231,227,216,.20);
+    --tint:    rgba(231,227,216,.10);
   }
 }
 
@@ -68,11 +74,13 @@ body {
   color: var(--ink-2);
   margin: 0;
 }
+/* 有小字参与的行内链接：1px 细下划线，别抢正文的注意力 */
+.micro a { border-bottom-width: 1px; }
 
 /* ---------- 报头：一行小标签（没有大字标题） ---------- */
 .masthead { display: flex; align-items: center; gap: 12px; padding: 34px 0 0; }
 .masthead h1 { margin: 0; font-weight: 400; }   /* 语义上是 h1，视觉上与小标签同级 */
-.masthead-year { margin-left: auto; }
+.masthead-tail { margin-left: auto; }
 .mark { flex: none; width: 22px; height: 22px; background: var(--red); }
 
 /* ---------- 数据行：两行小字，被一条实线封住 ---------- */
@@ -86,23 +94,9 @@ body {
   flex-wrap: wrap;
 }
 
-/* ---------- 章节：巨大朱红编号 + 小标签 + 实线 ---------- */
+/* ---------- 章节头（索引页只有一个：文档索引） ---------- */
 section { margin-top: clamp(56px, 9vw, 104px); }
-.sec-head {
-  display: flex;
-  align-items: baseline;
-  gap: 16px;
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 10px;
-}
-.num {
-  font-size: clamp(2rem, 6.6vw, 4rem);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -.05em;
-  color: var(--red);
-  font-feature-settings: "tnum" 1;
-}
+.sec-head { border-bottom: 1px solid var(--rule); padding-bottom: 10px; }
 h2 { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
 
 /* ---------- 索引：密排列表（日期 / 标题 / 类型） ---------- */
@@ -118,6 +112,8 @@ h2 { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: .02em; text-t
 .docs .d,
 .docs .k { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--ink-2); }
 .docs .t { font-size: 1.0625rem; }
+.docs .t a { border-bottom: 1px solid var(--rule-soft); }        /* 标题链接：细下划线 */
+.docs .t a:hover { background: none; color: var(--red); border-color: var(--red); }
 .docs .is-empty .t { max-width: 46ch; color: var(--ink-2); }
 .docs .is-empty .t b { font-weight: 400; color: var(--ink); }
 @media (max-width: 560px) {
@@ -125,27 +121,55 @@ h2 { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: .02em; text-t
   .docs .d { grid-column: 1 / -1; }   /* 窄屏把日期提到标题上一行 */
 }
 
-/* ---------- 类型词表：文档分类的固定说法 ---------- */
-.legend { margin: 0; padding: 0; }
-.legend > div {
-  display: grid;
-  grid-template-columns: 7rem 1fr;
-  gap: 16px;
-  padding: 14px 0;
+/* ---------- 文档页：docs/ 里的 markdown 渲染结果 ---------- */
+.doc { margin-top: clamp(40px, 6vw, 72px); }
+.doc-title {
+  font-size: clamp(1.6rem, 4.4vw, 2.6rem);
+  line-height: 1.22;
+  letter-spacing: -.02em;
+  font-weight: 700;
+  margin: 20px 0 0;
+}
+.prose { max-width: 38em; margin-top: 34px; }
+.prose > *:first-child { margin-top: 0; }
+.prose h2 {
+  font-size: 1.25rem; font-weight: 700; letter-spacing: -.01em;
+  text-transform: none;
+  margin: 2.4em 0 .7em; padding-bottom: .3em;
   border-bottom: 1px solid var(--rule-soft);
-  align-items: baseline;
 }
-.legend dt {
-  font-family: var(--mono);
-  font-size: 11px;
-  letter-spacing: .12em;
-  color: var(--ink);
+.prose h3 { font-size: 1.0625rem; margin: 2em 0 .5em; }
+.prose h4 { font-size: 1rem; margin: 1.8em 0 .4em; }
+.prose p { margin: 0 0 1.1em; }
+.prose ul, .prose ol { margin: 0 0 1.1em; padding-left: 1.3em; }
+.prose li { margin: .3em 0; }
+.prose code {
+  font-family: var(--mono); font-size: .86em;
+  background: var(--tint); padding: .12em .35em;
 }
-.legend dd { margin: 0; font-size: 1.0625rem; }
-@media (max-width: 560px) {
-  .legend > div { grid-template-columns: 1fr; gap: 4px; }
+.prose pre {
+  background: var(--tint); border: 1px solid var(--rule-soft);
+  padding: 14px 16px; margin: 0 0 1.3em; overflow-x: auto;
 }
+.prose pre code { background: none; padding: 0; font-size: .85rem; line-height: 1.6; }
+.prose blockquote {
+  margin: 0 0 1.3em; padding: .1em 0 .1em 1.1em;
+  border-left: 2px solid var(--red); color: var(--ink-2);
+}
+.prose table {
+  width: 100%; border-collapse: collapse;
+  font-size: .9375rem; margin: 0 0 1.4em;
+}
+.prose th, .prose td {
+  text-align: left; vertical-align: top;
+  padding: 9px 12px 9px 0;
+  border-bottom: 1px solid var(--rule-soft);
+}
+.prose th { border-bottom: 1px solid var(--rule); font-weight: 700; }
+.prose img { max-width: 100%; height: auto; }
+.prose hr { border: 0; border-top: 1px solid var(--rule-soft); margin: 2.2em 0; }
 
+/* ---------- 正文内链接 ---------- */
 a { color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--red); }
 a:hover { background: var(--red); border-color: var(--red); color: var(--paper); }
 

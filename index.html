@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Aoyama-mantan · 文档库：笔记、论文与项目的整理索引">
+  <meta name="description" content="Aoyama-mantan · 文档库：文档索引">
   <title>Aoyama-mantan · 文档库</title>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -14,10 +14,10 @@
     <header class="masthead">
       <span class="mark" aria-hidden="true"></span>
       <h1 class="micro">Aoyama-mantan · 文档库</h1>
-      <span class="micro masthead-year">2026</span>
+      <span class="micro masthead-tail">2026</span>
     </header>
 
-    <!-- 文档总数与排序方式：每加一份文档，这一行和 01 的列表要一起改 -->
+    <!-- 数据行由 tools/build_site.py 维护：文档总数 -->
     <div class="dataline">
       <span class="micro">共 0 份文档</span>
       <span class="micro">按更新日期倒序</span>
@@ -25,33 +25,23 @@
 
     <section aria-labelledby="docs">
       <div class="sec-head">
-        <span class="num">01</span>
         <h2 id="docs">文档索引</h2>
       </div>
+      <!-- 下面 <ol> 里的行由 tools/build_site.py 生成：标记区间只圈行，不含 <ol> 本身 -->
       <ol class="docs">
+        <!-- index:start -->
         <li class="is-empty">
           <span class="d">—</span>
-          <span class="t">暂无文档。<b>放进一份，这里就多一行</b>：日期在左，标题占主栏，类型靠右。</span>
+          <span class="t">暂无文档。<b>把 markdown 放进 docs/，这里就多一行</b>：日期在左，标题占主栏，类型靠右。</span>
           <span class="k">—</span>
         </li>
+<!-- index:end -->
       </ol>
-    </section>
-
-    <section aria-labelledby="types">
-      <div class="sec-head">
-        <span class="num">02</span>
-        <h2 id="types">类型</h2>
-      </div>
-      <dl class="legend">
-        <div><dt>笔记</dt><dd>阅读、听课与零散记录的整理稿</dd></div>
-        <div><dt>论文</dt><dd>精读笔记与复现实验记录</dd></div>
-        <div><dt>项目</dt><dd>代码、实验与过程记录</dd></div>
-      </dl>
     </section>
 
     <footer>
       <span class="micro">© 2026 Aoyama-mantan</span>
-      <span class="micro"><a href="https://github.com/Aoyama-mantan" target="_blank" rel="noopener">GitHub</a> · Helvetica · 一个强调色</span>
+      <span class="micro">Helvetica · 一个强调色 · 索引由 docs/ 生成</span>
     </footer>
 
   </div>

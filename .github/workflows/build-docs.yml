@@ -1,0 +1,49 @@
+name: 生成文档页与索引
+
+# docs/ 里的 markdown 是权威数据；d/ 下的页面和 index.html 的索引都是派生视图。
+# 往 docs/ 提交文档后，这个 workflow 重建它们并把结果提交回 gh-pages（Pages 照常部署）。
+on:
+  push:
+    branches: [gh-pages]
+    paths:
+      - "docs/**"
+      - "tools/**"
+      - ".github/workflows/build-docs.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-docs
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: 安装依赖（版本固定在 tools/requirements.txt）
+        run: pip install -r tools/requirements.txt
+
+      - name: 渲染文档页并重建索引
+        run: python3 tools/build_site.py --root .
+
+      - name: 有变化才提交（[skip ci] 防止自我触发）
+        run: |
+          if git diff --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "无变化，跳过提交"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A index.html d
+          git commit -m "chore: 依据 docs/ 重建文档页与索引 [skip ci]"
+          git push

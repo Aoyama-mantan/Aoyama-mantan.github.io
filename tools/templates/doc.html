@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{summary}}">
+  <title>{{title}} · Aoyama-mantan</title>
+  <link rel="stylesheet" href="{{root}}assets/css/style.css">
+</head>
+<body>
+  <div class="sheet">
+
+    <!-- 报头与索引页一致：一行小标签，站点名指回索引 -->
+    <header class="masthead">
+      <span class="mark" aria-hidden="true"></span>
+      <p class="micro"><a href="{{root}}index.html">Aoyama-mantan · 文档库</a></p>
+      <span class="micro masthead-tail">2026</span>
+    </header>
+
+    <article class="doc">
+      <p class="micro">{{meta}}</p>
+      <h1 class="doc-title">{{title}}</h1>
+      <div class="prose">
+{{body}}
+      </div>
+    </article>
+
+    <footer>
+      <span class="micro"><a href="{{root}}index.html">← 返回索引</a></span>
+      <span class="micro">© 2026 Aoyama-mantan</span>
+    </footer>
+
+  </div>
+</body>
+</html>
