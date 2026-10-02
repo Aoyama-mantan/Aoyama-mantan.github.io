@@ -98,22 +98,25 @@ body {
 .masthead-tail { margin-left: auto; }
 .mark { flex: none; width: 22px; height: 22px; background: var(--red); }
 
-/* ---------- 配色切换：三个小字选项，当前项用朱红细线标出 ---------- */
-.theme { display: flex; gap: 2px; }
-.theme button {
-  font: inherit;                       /* 继承 .theme（带 .micro）的等宽小字与字距 */
+/* ---------- 配色切换：一个图标，点击循环 自动 → 白天 → 夜间 ----------
+   显示哪个图标完全由 CSS 依据 html 上的状态决定（没有属性 = 自动），
+   所以即使脚本没跑起来，图标也不会和实际配色对不上。 */
+.theme-btn {
+  font: inherit;
   color: var(--ink-2);
   background: none;
   border: 0;
-  border-bottom: 1px solid transparent;
-  padding: 13px 8px;                   /* 触摸目标高度 ≈44px（内边距撑起来） */
+  padding: 13px;                       /* 触摸目标 ≈44px */
   cursor: pointer;
+  line-height: 0;
   -webkit-appearance: none; appearance: none;
 }
-.theme button:hover { color: var(--ink); }
-.theme button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--red); }
-.theme button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
-@media (max-width: 560px) { .theme button { padding: 13px 6px; letter-spacing: .1em; } }
+.theme-btn:hover { color: var(--ink); }
+.theme-btn:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.theme-btn svg { display: none; width: 18px; height: 18px; }   /* 三个图标叠在同一个位置 */
+:root:not([data-theme]) .theme-btn .i-auto,
+:root[data-theme="light"] .theme-btn .i-light,
+:root[data-theme="dark"]  .theme-btn .i-dark { display: block; }
 
 /* ---------- 数据行：两行小字，被一条实线封住 ---------- */
 .dataline {
