@@ -1,104 +1,162 @@
 /* ============================================================
    Aoyama-mantan · 个人文档库
-   Design language: Hermes-style, rendered sober & angular.
-     · sharp corners — no pills, no glow, no soft shadows
-     · flat color-blocks + hard hairline frames
-     · serif display, letter-spaced UPPERCASE mono labels
-   Palette: 海军蓝 #3E6FB5 · 米白 #F3ECDC · 藏青 #0A1A2F
-   Scope: top bar + hero + footer. Document-list / document-detail styles
-   were removed with the empty skeleton — re-add them when documents land.
+   设计语言：瑞士国际主义 · 「字阶」版
+     · 只有两级字号——很大 与 很小；中间层级靠分隔线和栏位对齐来分
+     · 左对齐，不居中；无圆角、无阴影、无渐变、无噪点、无卡片
+     · 单一强调色（朱红），只出现在需要被看见的地方：标记块、章节号、链接下划线
+     · 不加载任何网络字体：拉丁字母走 Helvetica → Arial，
+       中文走系统黑体（PingFang SC / 微软雅黑 / Noto Sans SC）
+   护眼处理（用户要求「护眼的色调」）：
+     · 底色为暖纸色 #EDEAE2，不是纯白；正文 #1F1E1A，不是纯黑
+     · 正文 17px / 行高 1.65 / 每行约 34 字；正文对比约 13:1（纯黑白是 21:1，长时间阅读偏刺眼）
+     · 深色模式跟随系统，用暖黑 #12120F + 暖白 #E7E3D8，同样避开纯黑纯白
+   维护提示：改配色只改下面的 token；结构只有 报头 / 数据行 / 章节 / 版权页 四块。
    ============================================================ */
 
 :root {
-  --bg:        #0A1A2F;   /* 藏青 deep navy — page */
-  --bg-half:   #0B1C34;
-  --line:      #1C3354;   /* hairline frame */
-  --line-2:    #31567F;   /* stronger rule / hover */
+  /* ---- 浅色（默认）：暖纸底 ---- */
+  --paper:   #EDEAE2;   /* 页面底 —— 暖纸，非纯白 */
+  --paper-2: #E4E0D5;   /* 次级块（如需要） */
+  --ink:     #1F1E1A;   /* 正文 —— 暖黑，非纯黑 */
+  --ink-2:   #6A6559;   /* 次级文字：小标签、日期、类型 */
+  --red:     #B8442C;   /* 强调 —— 朱红，比正红柔一档 */
+  --red-ink: #A33A25;   /* 朱红文字态（链接用，保证可读） */
+  --rule:    #1F1E1A;   /* 实线（章节、版权页、报头下） */
+  --rule-soft: rgba(31,30,26,.18);  /* 索引行分隔线 */
 
-  --ink:       #F3ECDC;   /* 米白 cream — primary text */
-  --ink-dim:   #B5BFD1;   /* muted */
-  --ink-faint: #7E91A9;   /* weakest */
+  --sans: "Helvetica Neue", Helvetica, Arial, "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
 
-  --navy:      #3E6FB5;   /* 海军蓝 accent — selection */
-  --navy-bright:#8FB3E0;  /* luminous navy — engraved highlight */
-  --accent:    #F3ECDC;   /* cream — flat fill */
+  --max: 1080px;
+  --gutter: clamp(20px, 4vw, 64px);
+}
 
-  --font-display: "Noto Serif SC","Songti SC",Georgia,"Times New Roman",serif;
-  --font-sans: ui-sans-serif,system-ui,-apple-system,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-  --font-mono: ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
-
-  --max: 1040px;        /* content column width */
-  --gutter: clamp(20px, 5vw, 48px);
+/* ---- 深色（跟随系统）：暖黑底 ---- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper:   #12120F;
+    --paper-2: #1B1A16;
+    --ink:     #E7E3D8;
+    --ink-2:   #948E80;
+    --red:     #D0603F;
+    --red-ink: #E07A5B;
+    --rule:    #E7E3D8;
+    --rule-soft: rgba(231,227,216,.20);
+  }
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html { -webkit-text-size-adjust: 100%; }
 body {
   margin: 0;
-  font-family: var(--font-sans);
+  background: var(--paper);
   color: var(--ink);
-  background-color: var(--bg);
-  background-image: radial-gradient(130% 95% at 50% 40%, transparent 45%, #061221 100%); /* hero vignette */
+  font-family: var(--sans);
+  font-size: 17px;          /* 比常见的 16px 略大，中文在暖纸底上更省眼 */
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  line-height: 1.75;
-  overflow-x: hidden;
-  /* keep the footer at the bottom of the viewport on short pages */
-  min-height: 100vh;
-  min-height: 100dvh;
+}
+.sheet { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); }
+
+/* 小字：全站唯一的「很小」级 —— 等宽、大字距、全大写拉丁 */
+.micro {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin: 0;
+}
+
+/* ---------- 报头：红方块 + 压满版心的名字 ---------- */
+.masthead { display: flex; align-items: flex-start; gap: 18px; padding: 48px 0 0; }
+.mark {
+  flex: none;
+  width: clamp(26px, 3.6vw, 42px);
+  height: clamp(26px, 3.6vw, 42px);
+  background: var(--red);
+  margin-top: .62em;
+}
+h1 {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(3rem, 12.4vw, 8.4rem);   /* 全站最大一级 */
+  line-height: .9;
+  letter-spacing: -.045em;
+}
+h1 span { display: block; }
+h1 .quiet { font-weight: 400; color: var(--ink-2); }
+
+/* ---------- 数据行：两行小字，被一条实线封住 ---------- */
+.dataline {
+  margin-top: 26px;
+  padding-top: 12px;
+  border-top: 2px solid var(--rule);
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
 }
 
-/* grain — Hermes keeps a whisper of it */
-.grain {
-  position: fixed; inset: 0; pointer-events: none; z-index: 999; opacity: .045;
-  mix-blend-mode: overlay;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+/* ---------- 章节：巨大朱红编号 + 小标签 + 实线 ---------- */
+section { margin-top: clamp(56px, 9vw, 104px); }
+.sec-head {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 10px;
+}
+.num {
+  font-size: clamp(2rem, 6.6vw, 4rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.05em;
+  color: var(--red);
+  font-feature-settings: "tnum" 1;
+}
+h2 { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
+
+/* ---------- 索引：密排列表（日期 / 标题 / 类型） ---------- */
+.docs { list-style: none; margin: 0; padding: 0; }
+.docs li {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr auto;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  align-items: baseline;
+}
+.docs .d,
+.docs .k { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; color: var(--ink-2); }
+.docs .t { font-size: 1.0625rem; }
+.docs .is-empty .t { max-width: 46ch; color: var(--ink-2); }
+.docs .is-empty .t b { font-weight: 400; color: var(--ink); }
+@media (max-width: 560px) {
+  .docs li { grid-template-columns: 1fr auto; }
+  .docs .d { grid-column: 1 / -1; }   /* 窄屏把日期提到标题上一行 */
 }
 
-/* ---------- top bar: flat, hairline ---------- */
-.topbar { position: sticky; top: 0; z-index: 100; background: var(--bg-half); border-bottom: 1px solid var(--line); }
-.topbar-inner {
-  max-width: var(--max); margin: 0 auto; padding: 16px var(--gutter);
-  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+/* ---------- 关于 ---------- */
+.prose { max-width: 38em; padding-top: 6px; }
+.prose p { margin: 0 0 .9em; }
+.prose .micro { margin-top: 18px; }
+
+a { color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--red); }
+a:hover { background: var(--red); border-color: var(--red); color: var(--paper); }
+
+/* ---------- 版权页 ---------- */
+footer {
+  margin-top: clamp(56px, 9vw, 104px);
+  border-top: 2px solid var(--rule);
+  padding: 16px 0 56px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
 }
-.brand {
-  display: flex; align-items: center; gap: 12px; text-decoration: none;
-  font-family: var(--font-display); font-weight: 700; font-size: 1.1rem;
-  letter-spacing: .02em; color: var(--ink);
-}
-.brand .rule { width: 22px; height: 2px; background: var(--accent); }
-.brand:hover { color: var(--accent); }
 
-/* ---------- container ---------- */
-.wrap { max-width: var(--max); margin: 0 auto; padding: 0 var(--gutter); flex: 1 0 auto; }
-/* home: with nothing under the hero, center it in the free space instead of
-   leaving a dead gap above the footer */
-.wrap.centered { display: flex; flex-direction: column; justify-content: center; }
-
-/* ---------- hero ---------- */
-.hero { padding: clamp(64px, 12vw, 140px) 0 clamp(56px, 7vw, 88px); }
-h1.hero-title {
-  font-family: var(--font-display); font-weight: 800;
-  font-size: clamp(2.8rem, 8vw, 5.6rem); line-height: 1.02; letter-spacing: -.005em;
-  margin: 22px 0 20px; color: var(--ink);
-}
-h1.hero-title .hl { font-style: italic; color: var(--navy-bright); font-weight: 700; }
-
-/* ---------- footer ---------- */
-footer { border-top: 1px solid var(--line); padding: 40px var(--gutter); }
-.foot-inner { max-width: var(--max); margin: 0 auto; display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: center; }
-footer .copy { font-family: var(--font-mono); font-size: .76rem; letter-spacing: .08em; color: var(--ink-faint); }
-footer .social { display: flex; gap: 4px; }
-footer .social a { color: var(--ink-dim); text-decoration: none; font-family: var(--font-mono); font-size: .78rem; letter-spacing: .1em; text-transform: uppercase; padding: 6px 12px; border: 1px solid transparent; }
-footer .social a:hover { color: var(--accent); border-color: var(--line-2); }
-
-/* reduced motion */
-@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; } }
-
-/* scrollbar tint */
-::-webkit-scrollbar { width: 11px; height: 11px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--line-2); border-radius: 0; border: 2px solid var(--bg); }
-::selection { background: var(--navy); color: var(--bg); }
+/* ---------- 杂项 ---------- */
+::selection { background: var(--red); color: var(--paper); }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
