@@ -45,6 +45,9 @@ SKIP_NAMES = {"readme.md"}
 # 不加指纹的话改了 CSS 之后最多 10 分钟内访客（包括自己）看到的还是旧的）
 VERSIONED_ASSETS = ("assets/css/style.css", "assets/js/theme.js")
 ASSET_REF_RE = re.compile(r"(assets/(?:css/style\.css|js/theme\.js))(?:\?v=[0-9a-f]+)?")
+# 站点版本：页面里写一份，version.json 里写一份；两者不一致说明浏览器缓存了旧页面
+SITE_VERSION_RE = re.compile(r'<meta name="site-version" content="[0-9a-f]*">')
+VERSION_JSON = "version.json"
 KEEP = {".gitkeep"}
 
 try:
@@ -172,6 +175,32 @@ def version_assets(markup: str, version: str) -> str:
     return ASSET_REF_RE.sub(lambda m: "%s?v=%s" % (m.group(1), version), markup)
 
 
+def site_version(root: pathlib.Path, index_html: str, docs_dir: pathlib.Path, template: str) -> str:
+    """整站内容指纹：样式、脚本、构建脚本、模板、首页（去掉版本号本身）、docs/ 下所有源文件。
+    任何一处改动都会让它变化，页面里的 meta 与 version.json 随之不同，旧缓存页面就会自愈。"""
+    digest = hashlib.sha256()
+    for rel in VERSIONED_ASSETS + (TEMPLATE, "tools/build_site.py"):
+        path = root / rel
+        digest.update(rel.encode())
+        digest.update(path.read_bytes() if path.exists() else b"")
+    digest.update(SITE_VERSION_RE.sub("", ASSET_REF_RE.sub(r"\1", index_html)).encode())
+    digest.update(template.replace("{{version}}", "").encode())
+    if docs_dir.exists():
+        for path in sorted(docs_dir.rglob("*")):
+            if path.is_file() and not is_skipped(path):
+                digest.update(path.relative_to(docs_dir).as_posix().encode())
+                digest.update(path.read_bytes())
+    return digest.hexdigest()[:12]
+
+
+def stamp_version(markup: str, version: str) -> str:
+    markup = markup.replace('content="{{version}}"', 'content="%s"' % version)   # 模板里的占位
+    if SITE_VERSION_RE.search(markup):
+        return SITE_VERSION_RE.sub('<meta name="site-version" content="%s">' % version, markup, count=1)
+    return markup.replace('<meta charset="UTF-8">',
+                          '<meta charset="UTF-8">\n  <meta name="site-version" content="%s">' % version, 1)
+
+
 def render_rows(docs: list, indent: str = "        ") -> str:
     if not docs:
         return (f'{indent}<li class="is-empty">\n'
@@ -234,13 +263,15 @@ def main() -> int:
     doc_map = {doc["src_rel"]: doc["out_rel"] for doc in docs}
     unresolved: list = []
     version = asset_version(root)
+    site_v = site_version(root, index_html, docs_dir, template)
     for doc in docs:
-        expected[(root / doc["out_rel"])] = version_assets(
-            render_doc_page(doc, template, doc_map, args.docs, unresolved), version)
+        page = version_assets(render_doc_page(doc, template, doc_map, args.docs, unresolved), version)
+        expected[(root / doc["out_rel"])] = stamp_version(page, site_v)
     for src, out_rel in assets:
         expected[root / out_rel] = None            # None = 直接复制字节
 
-    new_index = version_assets(rebuild_index(index_html, docs), version)
+    new_index = stamp_version(version_assets(rebuild_index(index_html, docs), version), site_v)
+    expected[root / VERSION_JSON] = '{"v": "%s"}\n' % site_v
 
     # 对比现状，列出变化
     changes = []
