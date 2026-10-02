@@ -2,6 +2,7 @@
    Aoyama-mantan · 个人文档库
    设计语言：瑞士国际主义 · 「字阶」版
      · 只有两级字号——很大 与 很小；中间层级靠分隔线和栏位对齐来分
+   · 报头不放大字标题（用户明确要求）：站点名用小标签呈现，全站最大字号是章节编号 01/02
      · 左对齐，不居中；无圆角、无阴影、无渐变、无噪点、无卡片
      · 单一强调色（朱红），只出现在需要被看见的地方：标记块、章节号、链接下划线
      · 不加载任何网络字体：拉丁字母走 Helvetica → Arial，
@@ -68,24 +69,11 @@ body {
   margin: 0;
 }
 
-/* ---------- 报头：红方块 + 压满版心的名字 ---------- */
-.masthead { display: flex; align-items: flex-start; gap: 18px; padding: 48px 0 0; }
-.mark {
-  flex: none;
-  width: clamp(26px, 3.6vw, 42px);
-  height: clamp(26px, 3.6vw, 42px);
-  background: var(--red);
-  margin-top: .62em;
-}
-h1 {
-  margin: 0;
-  font-weight: 700;
-  font-size: clamp(3rem, 12.4vw, 8.4rem);   /* 全站最大一级 */
-  line-height: .9;
-  letter-spacing: -.045em;
-}
-h1 span { display: block; }
-h1 .quiet { font-weight: 400; color: var(--ink-2); }
+/* ---------- 报头：一行小标签（没有大字标题） ---------- */
+.masthead { display: flex; align-items: center; gap: 12px; padding: 34px 0 0; }
+.masthead h1 { margin: 0; font-weight: 400; }   /* 语义上是 h1，视觉上与小标签同级 */
+.masthead-year { margin-left: auto; }
+.mark { flex: none; width: 22px; height: 22px; background: var(--red); }
 
 /* ---------- 数据行：两行小字，被一条实线封住 ---------- */
 .dataline {
