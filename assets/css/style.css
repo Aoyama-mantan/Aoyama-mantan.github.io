@@ -8,19 +8,20 @@
        中文走系统黑体（PingFang SC / 微软雅黑 / Noto Sans SC）
    护眼处理（用户要求「护眼的色调」）：
      · 底色为暖纸色 #EDEAE2，不是纯白；正文 #1F1E1A，不是纯黑
-     · 正文 17px / 行高 1.65 / 每行约 34 字；正文对比约 13:1（纯黑白是 21:1，长时间阅读偏刺眼）
+     · 正文 17px / 行高 1.65 / 每行约 34 字；正文对比约 13.9:1（纯黑白是 21:1，长时间阅读偏刺眼）
      · 深色模式跟随系统，用暖黑 #12120F + 暖白 #E7E3D8，同样避开纯黑纯白
-   维护提示：改配色只改下面的 token；结构只有 报头 / 数据行 / 章节 / 版权页 四块。
+   内容边界（用户明确要求）：这是纯粹的文档整理站，页面只出现文档本身的信息——
+   文档名、日期、类型、总数、排序方式。**不放身份、学历、研究方向、履历、联系方式等
+   个人介绍类内容**；加新内容前先确认它属于「文档的元数据」还是「人的简介」。
+   维护提示：改配色只改下面的 token；结构只有 报头 / 数据行 / 文档索引 / 类型词表 / 版权页 五块。
    ============================================================ */
 
 :root {
   /* ---- 浅色（默认）：暖纸底 ---- */
   --paper:   #EDEAE2;   /* 页面底 —— 暖纸，非纯白 */
-  --paper-2: #E4E0D5;   /* 次级块（如需要） */
   --ink:     #1F1E1A;   /* 正文 —— 暖黑，非纯黑 */
   --ink-2:   #6A6559;   /* 次级文字：小标签、日期、类型 */
   --red:     #B8442C;   /* 强调 —— 朱红，比正红柔一档 */
-  --red-ink: #A33A25;   /* 朱红文字态（链接用，保证可读） */
   --rule:    #1F1E1A;   /* 实线（章节、版权页、报头下） */
   --rule-soft: rgba(31,30,26,.18);  /* 索引行分隔线 */
 
@@ -35,11 +36,9 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --paper:   #12120F;
-    --paper-2: #1B1A16;
     --ink:     #E7E3D8;
     --ink-2:   #948E80;
     --red:     #D0603F;
-    --red-ink: #E07A5B;
     --rule:    #E7E3D8;
     --rule-soft: rgba(231,227,216,.20);
   }
@@ -138,10 +137,26 @@ h2 { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: .02em; text-t
   .docs .d { grid-column: 1 / -1; }   /* 窄屏把日期提到标题上一行 */
 }
 
-/* ---------- 关于 ---------- */
-.prose { max-width: 38em; padding-top: 6px; }
-.prose p { margin: 0 0 .9em; }
-.prose .micro { margin-top: 18px; }
+/* ---------- 类型词表：文档分类的固定说法 ---------- */
+.legend { margin: 0; padding: 0; }
+.legend > div {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  align-items: baseline;
+}
+.legend dt {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .12em;
+  color: var(--ink);
+}
+.legend dd { margin: 0; font-size: 1.0625rem; }
+@media (max-width: 560px) {
+  .legend > div { grid-template-columns: 1fr; gap: 4px; }
+}
 
 a { color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--red); }
 a:hover { background: var(--red); border-color: var(--red); color: var(--paper); }
