@@ -34,3 +34,12 @@ summary: 一句话摘要，用于页面 description
 - `d/` 与 `index.html` 的索引区块**都是生成物，不要手改**：`d/` 下不再属于任何文档的文件会在下次构建时被删除。
 - 本地预览：`pip install -r tools/requirements.txt && python3 tools/build_site.py --root .`，
   然后在仓库根目录起个静态服务器（`python3 -m http.server`）打开 `index.html`。
+
+## 维护要点（实测得来）
+
+- **每次本地改完先 `git pull` 再 push**：workflow 会在你提交之后追加一个「重建」提交，
+  本地落后于远端时推送会被拒（非快进）。
+- 触发构建的路径：`docs/**`、`tools/**`、以及 workflow 文件本身。只改 `assets/css/style.css`
+  之类不会触发重建——因为不影响生成结果。
+- 机器人提交带 `[skip ci]`，不会自己触发自己；构建无变化时直接跳过提交，不产生空提交。
+- 想只检查是否需要重建：`python3 tools/build_site.py --root . --check`（有变化退出码 3）。
