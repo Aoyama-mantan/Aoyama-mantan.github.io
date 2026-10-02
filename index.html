@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Aoyama-mantan · 文档库：文档索引">
   <title>Aoyama-mantan · 文档库</title>
+  <script src="assets/js/theme.js"></script>
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -14,7 +15,12 @@
     <header class="masthead">
       <span class="mark" aria-hidden="true"></span>
       <h1 class="micro">Aoyama-mantan · 文档库</h1>
-      <span class="micro masthead-tail">2026</span>
+      <p class="micro masthead-tail">2026</p>
+      <div class="theme micro" role="group" aria-label="配色">
+        <button type="button" data-theme-set="light" aria-pressed="false">白天</button>
+        <button type="button" data-theme-set="dark" aria-pressed="false">夜间</button>
+        <button type="button" data-theme-set="auto" aria-pressed="true">自动</button>
+      </div>
     </header>
 
     <!-- 数据行由 tools/build_site.py 维护：文档总数 -->

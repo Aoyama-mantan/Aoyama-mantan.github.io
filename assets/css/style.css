@@ -5,7 +5,7 @@
      · 报头不放大字标题（用户明确要求）：站点名用小标签呈现
      · 左对齐，不居中；无圆角、无阴影、无渐变、无噪点、无卡片
      · 单一强调色（朱红），只出现在需要被看见的地方：标记块、链接下划线、正文里的引用线
-     · 不加载任何网络字体：拉丁字母走 Helvetica → Arial，
+     · 只有一处 JS（assets/js/theme.js）：配色切换；不加载任何网络字体：拉丁字母走 Helvetica → Arial，
        中文走系统黑体（PingFang SC / 微软雅黑 / Noto Sans SC）
    护眼处理（用户要求「护眼的色调」）：
      · 底色为暖纸色 #EDEAE2，不是纯白；正文 #1F1E1A，不是纯黑
@@ -38,9 +38,24 @@
   --gutter: clamp(20px, 4vw, 64px);
 }
 
-/* ---- 深色（跟随系统）：暖黑底 ---- */
+/* ---- 配色三态（报头可切）----
+     未选         → 跟随系统：走下面 @media 里的 :root:not([data-theme])
+     data-theme="dark"  → 强制暖黑（系统是浅色也用深）
+     data-theme="light" → 强制暖纸（系统是深色也用浅）
+   深色 token 出现两次是刻意的（一次给显式选择，一次给「没选且系统为深色」）；
+   改配色时两处必须同步。 */
+:root[data-theme="dark"] {
+  --paper:   #12120F;
+  --ink:     #E7E3D8;
+  --ink-2:   #948E80;
+  --red:     #D0603F;
+  --rule:    #E7E3D8;
+  --rule-soft: rgba(231,227,216,.20);
+  --tint:    rgba(231,227,216,.10);
+}
+
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme]) {
     --paper:   #12120F;
     --ink:     #E7E3D8;
     --ink-2:   #948E80;
@@ -82,6 +97,23 @@ body {
 .masthead h1 { margin: 0; font-weight: 400; }   /* 语义上是 h1，视觉上与小标签同级 */
 .masthead-tail { margin-left: auto; }
 .mark { flex: none; width: 22px; height: 22px; background: var(--red); }
+
+/* ---------- 配色切换：三个小字选项，当前项用朱红细线标出 ---------- */
+.theme { display: flex; gap: 2px; }
+.theme button {
+  font: inherit;                       /* 继承 .theme（带 .micro）的等宽小字与字距 */
+  color: var(--ink-2);
+  background: none;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  padding: 13px 8px;                   /* 触摸目标高度 ≈44px（内边距撑起来） */
+  cursor: pointer;
+  -webkit-appearance: none; appearance: none;
+}
+.theme button:hover { color: var(--ink); }
+.theme button[aria-pressed="true"] { color: var(--ink); border-bottom-color: var(--red); }
+.theme button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+@media (max-width: 560px) { .theme button { padding: 13px 6px; letter-spacing: .1em; } }
 
 /* ---------- 数据行：两行小字，被一条实线封住 ---------- */
 .dataline {
