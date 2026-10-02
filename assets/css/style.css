@@ -90,7 +90,7 @@ body {
 /* 小字：全站唯一的「很小」级 —— 等宽、大字距、全大写拉丁 */
 .micro {
   font-family: var(--mono);
-  font-size: .64rem;        /* ≈12.2px */
+  font-size: .7rem;         /* ≈13.3px */
   letter-spacing: .15em;
   text-transform: uppercase;
   color: var(--ink-2);
@@ -151,7 +151,7 @@ body {
 /* ---------- 章节头（索引页只有一个：文档索引） ---------- */
 section { margin-top: clamp(56px, 9vw, 104px); }
 .sec-head { border-bottom: 1px solid var(--rule); padding-bottom: 10px; }
-h2 { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
+h2 { margin: 0; font-size: 1.125rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
 
 /* ---------- 索引：密排列表（日期 / 标题 / 类型） ---------- */
 .docs { list-style: none; margin: 0; padding: 0; }
@@ -164,8 +164,8 @@ h2 { margin: 0; font-size: 1rem; font-weight: 700; letter-spacing: .02em; text-t
   align-items: baseline;
 }
 .docs .d,
-.docs .k { font-family: var(--mono); font-size: .61rem; letter-spacing: .08em; color: var(--ink-2); }
-.docs .t { font-size: 1.0625rem; }
+.docs .k { font-family: var(--mono); font-size: .68rem; letter-spacing: .08em; color: var(--ink-2); }
+.docs .t { font-size: 1.25rem; }        /* 主页最大的字：索引里的文档标题 */
 .docs .t a { border-bottom: 1px solid var(--rule-soft); }        /* 标题链接：细下划线 */
 .docs .t a:hover { background: none; color: var(--red); border-color: var(--red); }
 .docs .is-empty .t { max-width: 46ch; color: var(--ink-2); }
