@@ -56,7 +56,7 @@
   --ink:     #E7E3D8;
   --ink-2:   #948E80;
   --link:    #7FB0E8;
-  --burgundy: #B04E68;
+  --burgundy: #CC3344;   /* 夜间方块：比浅色那支更红、更饱和，压在蓝调近黑上 */
   --rule:    #E7E3D8;
   --rule-soft: rgba(231,227,216,.20);
   --tint:    rgba(231,227,216,.10);
@@ -68,7 +68,7 @@
     --ink:     #E7E3D8;
     --ink-2:   #948E80;
     --link:    #7FB0E8;
-    --burgundy: #B04E68;
+    --burgundy: #CC3344;   /* 夜间方块：比浅色那支更红、更饱和，压在蓝调近黑上 */
     --rule:    #E7E3D8;
     --rule-soft: rgba(231,227,216,.20);
     --tint:    rgba(231,227,216,.10);
