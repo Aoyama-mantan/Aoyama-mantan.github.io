@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="site-version" content="f92a9fd60cc2">
+  <meta name="description" content="本站支持的写法与几个容易踩的坑：表格、代码围栏、中文与行内码之间的空格">
+  <title>Markdown 写法速查 · Aoyama-mantan</title>
+  <script src="../../assets/js/theme.js?v=a3bb4719"></script>
+  <link rel="stylesheet" href="../../assets/css/style.css?v=a3bb4719">
+</head>
+<body>
+  <div class="sheet">
+
+    <!-- 报头与索引页一致：一行小标签，站点名指回索引 -->
+    <!-- 顶边栏：返回索引 / 站点标记 / 配色切换 -->
+    <header class="masthead masthead--bar">
+      <span class="mark" aria-hidden="true"></span>
+      <a class="micro" href="../../index.html">← 返回索引</a>
+      <span class="micro masthead-tail">2026</span>
+      <button type="button" class="theme-btn" aria-label="配色：自动（点击切换）" title="配色：自动（点击切换）">
+        <svg class="i-auto" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none"/></svg>
+        <svg class="i-light" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"/></svg>
+        <svg class="i-dark" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+      </button>
+    </header>
+
+    <article class="doc">
+      <p class="micro">更新 2026-10-01 · 笔记</p>
+      <h1 class="doc-title">Markdown 写法速查</h1>
+      <div class="prose">
+<h2>基本写法</h2>
+<table>
+<thead>
+<tr>
+<th>想写</th>
+<th>写法</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>二级标题</td>
+<td><code>## 标题</code></td>
+<td>文档页从 h2 起，h1 由 front matter 的 <code>title</code> 生成</td>
+</tr>
+<tr>
+<td>强调</td>
+<td><code>**粗**</code> <code>*斜*</code></td>
+<td>中文之间不必加空格</td>
+</tr>
+<tr>
+<td>行内码</td>
+<td><code>`docs/`</code></td>
+<td>会带浅底，字号缩小到 .86em</td>
+</tr>
+<tr>
+<td>代码块</td>
+<td>三个反引号 + 语言名</td>
+<td>语言名只影响高亮，不加也能渲染</td>
+</tr>
+<tr>
+<td>链接</td>
+<td><code>[文字](地址)</code></td>
+<td>站内互链见下</td>
+</tr>
+<tr>
+<td>图片</td>
+<td><code>![](img/图.png)</code></td>
+<td>相对 <code>docs/</code> 的路径，构建时原样复制</td>
+</tr>
+<tr>
+<td>引用</td>
+<td><code>&gt; 一句</code></td>
+<td>左侧一条竖线，文字降一级颜色</td>
+</tr>
+<tr>
+<td>分隔线</td>
+<td><code>---</code></td>
+<td>单独一行，注意别和 front matter 混</td>
+</tr>
+</tbody>
+</table>
+<h2>表格的两个坑</h2>
+<p>第一，表头与正文之间<strong>必须</strong>有那行 <code>|---|---|</code>，否则整块会被当成普通文字；第二，表格前后要空一行，紧贴段落时有些解析器会把段落吃进表格。</p>
+<h2>代码围栏</h2>
+<pre><code class="language-python"># 语言名写在围栏后面，用来做高亮
+def normalize(x):
+    return (x - x.mean()) / (x.std() + 1e-8)
+</code></pre>
+<p>行内码和中文之间<strong>不加空格</strong>也读得通（<code>docs/</code>目录），但加了空格排版更松快（<code>docs/</code> 目录）。本站统一用后者。</p>
+<h2>跨文档链接</h2>
+<p>直接写文件名，构建时会改写成站内渲染页地址：</p>
+<ul>
+<li><a href="%E6%96%87%E6%A1%A3%E5%BA%93%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html">文档库使用说明</a></li>
+<li><a href="%E6%96%87%E6%A1%A3%E7%AB%99%E6%94%B9%E7%89%88%E8%AE%B0%E5%BD%95.html">文档站改版记录</a></li>
+</ul>
+<h2>命名约定</h2>
+<ul>
+<li>文件名以 <code>_</code> 开头、或叫 <code>README.md</code> 的文件<strong>不进索引</strong>，适合放草稿和说明</li>
+<li>想固定网址路径就写 <code>slug</code>，否则沿用 <code>docs/</code> 下的相对路径</li>
+</ul>
+      </div>
+    </article>
+
+    <footer>
+      <span class="micro">© 2026 Aoyama-mantan</span>
+    </footer>
+
+  </div>
+</body>
+</html>

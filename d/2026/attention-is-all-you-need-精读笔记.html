@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="site-version" content="f92a9fd60cc2">
+  <meta name="description" content="Transformer 的动机、缩放点积注意力、多头与位置编码，附复杂度对比与训练细节">
+  <title>Attention Is All You Need · 精读笔记 · Aoyama-mantan</title>
+  <script src="../../assets/js/theme.js?v=a3bb4719"></script>
+  <link rel="stylesheet" href="../../assets/css/style.css?v=a3bb4719">
+</head>
+<body>
+  <div class="sheet">
+
+    <!-- 报头与索引页一致：一行小标签，站点名指回索引 -->
+    <!-- 顶边栏：返回索引 / 站点标记 / 配色切换 -->
+    <header class="masthead masthead--bar">
+      <span class="mark" aria-hidden="true"></span>
+      <a class="micro" href="../../index.html">← 返回索引</a>
+      <span class="micro masthead-tail">2026</span>
+      <button type="button" class="theme-btn" aria-label="配色：自动（点击切换）" title="配色：自动（点击切换）">
+        <svg class="i-auto" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none"/></svg>
+        <svg class="i-light" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"/></svg>
+        <svg class="i-dark" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+      </button>
+    </header>
+
+    <article class="doc">
+      <p class="micro">更新 2026-09-20 · 论文</p>
+      <h1 class="doc-title">Attention Is All You Need · 精读笔记</h1>
+      <div class="prose">
+<h2>动机</h2>
+<p>RNN 沿时间步串行，长序列既慢又难并行，长程依赖还得靠隐状态一路带下来（梯度路径长）；CNN 能并行，但感受野要靠堆层数换。这篇的处理是：<strong>把序列关系全部交给注意力</strong>，不用循环也不用卷积——任意两个位置之间的路径长度变成 1。</p>
+<h2>缩放点积注意力</h2>
+<pre><code>Attention(Q,K,V) = softmax( Q K^T / sqrt(d_k) ) V
+</code></pre>
+<p>那个 <code>sqrt(d_k)</code> 不是随手加的：若 <code>q</code>、<code>k</code> 各维独立、均值 0 方差 1，点积方差就是 <code>d_k</code>；<code>d_k</code> 一大，softmax 会被推进饱和区，梯度趋近 0。除以 <code>sqrt(d_k)</code> 把方差拉回 1。</p>
+<p><strong>多头</strong>是把表示切到 <code>h = 8</code> 个子空间分别做注意力再拼回：</p>
+<pre><code>MultiHead(Q,K,V) = Concat(head_1, ..., head_h) W^O
+head_i           = Attention( Q W_i^Q , K W_i^K , V W_i^V )
+</code></pre>
+<p>每个头 <code>d_k = d_v = d_model / h = 64</code>，总计算量与单头同量级。</p>
+<h2>结构要点</h2>
+<table>
+<thead>
+<tr>
+<th>部件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Encoder</td>
+<td>6 层，每层 = 自注意力 + 前馈，各自带残差与 LayerNorm</td>
+</tr>
+<tr>
+<td>Decoder</td>
+<td>6 层，多一层对 encoder 输出的交叉注意力</td>
+</tr>
+<tr>
+<td>Mask</td>
+<td>解码端自注意力做因果掩码，防止看到未来</td>
+</tr>
+<tr>
+<td>前馈</td>
+<td>两层线性 + ReLU，<code>d_ff = 2048</code></td>
+</tr>
+<tr>
+<td>位置编码</td>
+<td>正弦/余弦，可与训练长度以外的位置对齐</td>
+</tr>
+</tbody>
+</table>
+<pre><code>PE(pos, 2i)   = sin( pos / 10000^(2i/d_model) )
+PE(pos, 2i+1) = cos( pos / 10000^(2i/d_model) )
+</code></pre>
+<h2>复杂度对比</h2>
+<table>
+<thead>
+<tr>
+<th>层类型</th>
+<th>每层复杂度</th>
+<th>串行步数</th>
+<th>最长路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>自注意力</td>
+<td><code>O(n^2 d)</code></td>
+<td><code>O(1)</code></td>
+<td><code>O(1)</code></td>
+</tr>
+<tr>
+<td>循环</td>
+<td><code>O(n d^2)</code></td>
+<td><code>O(n)</code></td>
+<td><code>O(n)</code></td>
+</tr>
+<tr>
+<td>卷积</td>
+<td><code>O(k n d^2)</code></td>
+<td><code>O(1)</code></td>
+<td><code>O(log_k n)</code></td>
+</tr>
+</tbody>
+</table>
+<p>短序列上循环更省，长序列注意力更优——代价是那项 <code>n^2</code>。</p>
+<h2>训练细节</h2>
+<ul>
+<li>Adam，<code>beta_2 = 0.98</code>，学习率先预热再衰减：</li>
+</ul>
+<pre><code>lr = d_model^(-0.5) * min( t^(-0.5) , t * warmup^(-1.5) )
+</code></pre>
+<ul>
+<li>残差 dropout 0.1；标签平滑 <code>eps_ls = 0.1</code>（换来 BLEU 提升，但困惑度变差）</li>
+<li>8 卡 P100 训 3.5 天；大模型 12 小时</li>
+</ul>
+<blockquote>
+<p>结果：WMT14 EN-DE 28.4 BLEU，EN-FR 41.8 BLEU，训练成本远低于当时最好的循环模型。</p>
+</blockquote>
+<h2>之后</h2>
+<p>只留注意力的结构把「预训练 + 微调」这条路打开了：编码器侧的 BERT 类、解码器侧的 GPT 类都从这里出发。相关基础见<a href="%E7%9F%A9%E9%98%B5%E5%88%86%E8%A7%A3%E4%B8%8E%E6%8E%A8%E8%8D%90%E7%B3%BB%E7%BB%9F-%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0.html">矩阵分解与推荐系统 · 读书笔记</a>里对低维表示的讨论。</p>
+      </div>
+    </article>
+
+    <footer>
+      <span class="micro">© 2026 Aoyama-mantan</span>
+    </footer>
+
+  </div>
+</body>
+</html>

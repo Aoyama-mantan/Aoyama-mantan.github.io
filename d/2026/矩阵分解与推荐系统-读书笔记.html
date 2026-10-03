@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="site-version" content="f92a9fd60cc2">
+  <meta name="description" content="从显式反馈的 MF 到隐式反馈的加权 ALS：目标函数、求解、评估口径与几个实现坑">
+  <title>矩阵分解与推荐系统 · 读书笔记 · Aoyama-mantan</title>
+  <script src="../../assets/js/theme.js?v=a3bb4719"></script>
+  <link rel="stylesheet" href="../../assets/css/style.css?v=a3bb4719">
+</head>
+<body>
+  <div class="sheet">
+
+    <!-- 报头与索引页一致：一行小标签，站点名指回索引 -->
+    <!-- 顶边栏：返回索引 / 站点标记 / 配色切换 -->
+    <header class="masthead masthead--bar">
+      <span class="mark" aria-hidden="true"></span>
+      <a class="micro" href="../../index.html">← 返回索引</a>
+      <span class="micro masthead-tail">2026</span>
+      <button type="button" class="theme-btn" aria-label="配色：自动（点击切换）" title="配色：自动（点击切换）">
+        <svg class="i-auto" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none"/></svg>
+        <svg class="i-light" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"/></svg>
+        <svg class="i-dark" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+      </button>
+    </header>
+
+    <article class="doc">
+      <p class="micro">更新 2026-09-28 · 笔记</p>
+      <h1 class="doc-title">矩阵分解与推荐系统 · 读书笔记</h1>
+      <div class="prose">
+<h2>为什么是矩阵分解</h2>
+<p>评分矩阵里已知项往往不到 1%。矩阵分解把用户和物品各映射到一个低维空间，用内积去补未知项：</p>
+<pre><code>r_hat(u,i) = mu + b_u + b_i + p_u^T q_i
+</code></pre>
+<p>其中 <code>mu</code> 是全局均值，<code>b_u</code>、<code>b_i</code> 是用户与物品偏置——<strong>先扣掉「这个人本来就爱打高分」和「这个物品本来就受欢迎」</strong>，剩下的才是交互信号。</p>
+<h2>目标函数与求解</h2>
+<pre><code>min  sum over (u,i) in K  ( r_ui - r_hat(u,i) )^2
+       + lambda * ( ||p_u||^2 + ||q_i||^2 + b_u^2 + b_i^2 )
+</code></pre>
+<p>只对已知项求和（<code>K</code> 是观测集合），两种常见解法：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>每次迭代</th>
+<th>适合</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SGD</td>
+<td>扫一个评分更新一次，<code>O(|K| d)</code></td>
+<td>数据大、要实时增量</td>
+</tr>
+<tr>
+<td>ALS</td>
+<td>交替固定一侧解线性系统</td>
+<td>能并行、隐式反馈更顺</td>
+</tr>
+</tbody>
+</table>
+<h2>隐式反馈：置信度加权</h2>
+<p>点击、浏览这类行为没有「不喜欢」的样本。经典做法是把它当<strong>置信度</strong>而不是分数：</p>
+<pre><code>c_ui = 1 + alpha * r_ui
+min  sum over all (u,i)  c_ui * ( p_ui - p_u^T q_i )^2 + lambda * (...)
+</code></pre>
+<p><code>r_ui</code> 是行为强度（次数、时长），<code>p_ui</code> 是 0/1 偏好。全矩阵参与求和，但 ALS 的坐标解可以写成只依赖非零项的形式，所以并没有真的遍历整个 <code>m × n</code> —— 说「ALS 太慢」的，多半是没做这个化简。</p>
+<pre><code class="language-python"># ALS 的一步用户侧更新（伪代码）
+# A = Q^T Q ; 逐用户改成 A + Q^T (C_u - I) Q
+for u in range(n_users):
+    idx = seen[u]                       # 该用户有行为的物品
+    Cu  = alpha * weights[u]            # 置信度增量
+    A   = Q[idx].T @ (Q[idx] * Cu[:, None]) + Q.T @ Q + lam * np.eye(d)
+    b   = Q[idx].T @ (Cu * pref[u])
+    P[u] = np.linalg.solve(A, b)
+</code></pre>
+<h2>评估口径的坑</h2>
+<ul>
+<li><strong>RMSE 好看 ≠ 推荐好用</strong>：评分预测是回归目标，排序才是推荐目标，两者排序不一致</li>
+<li>离线评估只看<strong>留出的已知项</strong>，等于假装未知项是负样本，和线上分布差得远</li>
+<li>排序指标用 Precision@K / NDCG@K，都要<strong>每用户独立留出</strong>，别全局随机切</li>
+<li>冷启动用户只有偏置项可学，早停和正则要比常规更狠</li>
+</ul>
+<blockquote>
+<p>结论：把偏置和正则先调明白，再谈更高阶的模型；很多「深度模型涨点」其实是基线没调好。</p>
+</blockquote>
+<p>延伸：<a href="attention-is-all-you-need-%E7%B2%BE%E8%AF%BB%E7%AC%94%E8%AE%B0.html">Attention Is All You Need · 精读笔记</a> 里那套序列建模思路，近年在序列推荐上也被大量借用。</p>
+      </div>
+    </article>
+
+    <footer>
+      <span class="micro">© 2026 Aoyama-mantan</span>
+    </footer>
+
+  </div>
+</body>
+</html>

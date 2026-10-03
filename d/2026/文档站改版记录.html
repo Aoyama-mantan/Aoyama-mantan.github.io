@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="site-version" content="f92a9fd60cc2">
+  <meta name="description" content="从模板站改成瑞士字阶版：一个字阶旋钮、一条左边界、可点即蓝、缓存自愈">
+  <title>文档站改版记录 · Aoyama-mantan</title>
+  <script src="../../assets/js/theme.js?v=a3bb4719"></script>
+  <link rel="stylesheet" href="../../assets/css/style.css?v=a3bb4719">
+</head>
+<body>
+  <div class="sheet">
+
+    <!-- 报头与索引页一致：一行小标签，站点名指回索引 -->
+    <!-- 顶边栏：返回索引 / 站点标记 / 配色切换 -->
+    <header class="masthead masthead--bar">
+      <span class="mark" aria-hidden="true"></span>
+      <a class="micro" href="../../index.html">← 返回索引</a>
+      <span class="micro masthead-tail">2026</span>
+      <button type="button" class="theme-btn" aria-label="配色：自动（点击切换）" title="配色：自动（点击切换）">
+        <svg class="i-auto" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none"/></svg>
+        <svg class="i-light" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.2 5.2l2.1 2.1M16.7 16.7l2.1 2.1M18.8 5.2l-2.1 2.1M7.3 16.7l-2.1 2.1"/></svg>
+        <svg class="i-dark" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z"/></svg>
+      </button>
+    </header>
+
+    <article class="doc">
+      <p class="micro">更新 2026-10-03 · 项目</p>
+      <h1 class="doc-title">文档站改版记录</h1>
+      <div class="prose">
+<h2>目标</h2>
+<p>做成<strong>纯文档整理站</strong>：页面只出现文档本身的信息（标题、日期、类型、总数），不写个人介绍。视觉走瑞士国际主义的字阶路线——极大与极小两级字号、一个强调色、不加圆角阴影渐变。</p>
+<h2>字阶：只有一个旋钮</h2>
+<p>全站字号由 <code>html</code> 的 <code>font-size</code> 决定（当前 19px），其余尺寸一律用 <code>rem</code>，改一个数字整站一起缩放。</p>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>用法</th>
+<th>当前值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>正文</td>
+<td>文档内容</td>
+<td>1rem / 行高 1.7</td>
+</tr>
+<tr>
+<td>索引标题</td>
+<td>主页最大的字</td>
+<td>1.25rem</td>
+</tr>
+<tr>
+<td>小标签</td>
+<td>报头、页脚、日期、类型</td>
+<td>.7rem 等宽 + 大字距</td>
+</tr>
+<tr>
+<td>文档页标题</td>
+<td>文档页 h1</td>
+<td>clamp(1.6rem, 4.4vw, 2.6rem)</td>
+</tr>
+</tbody>
+</table>
+<p>每行约 38 字（桌面），窄屏约 24 字。</p>
+<h2>颜色：可点即蓝，标记即红</h2>
+<p>底是暖纸色而非纯白，正文是暖黑而非纯黑——纯白纯黑对比 21:1，长时间读偏刺眼。</p>
+<ul>
+<li><strong>可点的</strong>（链接、返回、焦点圈、选中文字）：一个蓝，浅色 <code>#1D4E89</code>，深色 <code>#7FB0E8</code></li>
+<li><strong>标记</strong>（报头方块）：勃艮第红 <code>#800020</code></li>
+<li>白天/夜间/自动三态由 <code>data-theme</code> 属性驱动，图标显示交给 CSS，脚本只负责点击循环</li>
+</ul>
+<h2>对齐：全站一条左边界</h2>
+<p>段落、代码块、表格、报头方块、返回链接、列表编号，全部踩在同一条线上。</p>
+<blockquote>
+<p>列表最初是 <code>padding-left: 1.3em</code>，编号停在 +5px、条目文字停在 +25px，一页上出现三条左边界；改成编号列内、条目用等值 <code>padding-left</code> 配负 <code>text-indent</code> 之后，编号正好落在这条线上，一位两位编号都一样。</p>
+</blockquote>
+<h2>交互与缓存</h2>
+<ul>
+<li>文档页顶栏<strong>钉住</strong>：<code>position: sticky</code>，底色不透明，长文从它下面穿过</li>
+<li>资源引用带内容指纹 <code>?v=&lt;hash&gt;</code>，站点另有 <code>version.json</code> 版本比对：页面发现自己比线上旧时，带一次性参数重取一次 HTML 并重载（只在未滚动时动手，不打断阅读）</li>
+<li>图片附件与 <code>draft</code> 字段还没实测过，等有真图再补</li>
+</ul>
+<h2>字体</h2>
+<p>不指定任何字体，交给浏览器默认——每台机器用自己的那套。等宽部分只写通用族名 <code>monospace</code>。相关问题见<a href="%E6%96%87%E6%A1%A3%E5%BA%93%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.html">文档库使用说明</a>。</p>
+      </div>
+    </article>
+
+    <footer>
+      <span class="micro">© 2026 Aoyama-mantan</span>
+    </footer>
+
+  </div>
+</body>
+</html>
