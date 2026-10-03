@@ -200,8 +200,16 @@ h2 { margin: 0; font-size: 1.125rem; font-weight: 700; letter-spacing: .02em; te
 .prose h3 { font-size: 1.0625rem; margin: 2em 0 .5em; }
 .prose h4 { font-size: 1rem; margin: 1.8em 0 .4em; }
 .prose p { margin: 0 0 1.1em; }
-.prose ul, .prose ol { margin: 0 0 1.1em; padding-left: 1.3em; }
+/* 列表：条目文字与段落踩同一条左对齐线，编号/圆点挂到左边距里。
+   做法 = 左 padding 与负左 margin 取同一个值：标记只在这段 padding 内活动，
+   既不会溢出到页面外，也不会把条目文字顶离对齐线（之前是 padding 1.3em 把
+   文字推到 +25px，标记又停在 +5px，于是页面上出现三条左边界）。 */
+.prose ul, .prose ol { margin: 0 0 1.1em -1.2em; padding-left: 1.2em; }
 .prose li { margin: .3em 0; }
+/* 窄屏的页边距只有 20px，悬挂编号会贴到屏幕边缘：收回列内 */
+@media (max-width: 560px) {
+  .prose ul, .prose ol { margin-left: 0; padding-left: 1.2em; }
+}
 .prose code {
   font-family: var(--mono); font-size: .86em;
   background: var(--tint); padding: .12em .35em;
